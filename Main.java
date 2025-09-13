@@ -1,11 +1,5 @@
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
 
@@ -276,7 +270,7 @@ public class Main {
 
             final String value;
 
-            private Option(String value) {
+            Option(String value) {
                 this.value = value;
             }
 
@@ -335,7 +329,7 @@ public class Main {
         private void showPlayerHands() {
             // Get the longest Hand from playerHands
             int maxLength = Collections.max(
-                    this.playerHands, (a, b) -> a.cards.size() - b.cards.size()
+                    this.playerHands, Comparator.comparingInt(a -> a.cards.size())
             ).cards.size();
 
             StringBuilder[] sbs = new StringBuilder[(maxLength * 2) + 4];
@@ -388,10 +382,9 @@ public class Main {
 
         private Option chooseOption(int playerHandIndex) {
             Hand playerHand = this.playerHands.get(playerHandIndex);
-            ArrayList<Option> options = new ArrayList<>();
 
             // Default options
-            options.addAll(List.of(
+            ArrayList<Option> options = new ArrayList<>(List.of(
                     Option.HIT, Option.STAND
             ));
 
@@ -428,7 +421,7 @@ public class Main {
             int chosenOption = -1;
 
             while (chosenOption < 1 || chosenOption > options.size()) {
-                System.out.println(optionsSB.toString());
+                System.out.println(optionsSB);
                 System.out.print("Enter an option number: ");
 
                 // Don't get InputMismatchExceptions
