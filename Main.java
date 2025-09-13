@@ -32,72 +32,56 @@ public class Main {
 
         @Override
         public String toString() {
-            return this.face.toString() + " of " + this.suit.toString();
-        }
-
-        public String toShortString() {
-            return this.suit.toShortString() + " " + this.face.toShortString();
+            return this.suit.toString() + " " + this.face.toString();
         }
     }
 
     public enum Face {
         // Each enum value acts like a function
         // We're calling the constructor, Face()
-        ACE("Ace", " A"),
-        TWO("2", " 2"),
-        THREE("3", " 3"),
-        FOUR("4", " 4"),
-        FIVE("5", " 5"),
-        SIX("6", " 6"),
-        SEVEN("7", " 7"),
-        EIGHT("8", " 8"),
-        NINE("9", " 9"),
-        TEN("10", "10"),
-        JACK("Jack", " J"),
-        QUEEN("Queen", " Q"),
-        KING("King", " K");
+        ACE(" A"),
+        TWO(" 2"),
+        THREE(" 3"),
+        FOUR(" 4"),
+        FIVE(" 5"),
+        SIX(" 6"),
+        SEVEN(" 7"),
+        EIGHT(" 8"),
+        NINE(" 9"),
+        TEN("10"),
+        JACK(" J"),
+        QUEEN(" Q"),
+        KING(" K");
 
         // We want a String version of each value
         private final String nameString;
-        private final String shortNameString;
 
-        Face(String nameString, String shortNameString) {
+        Face(String nameString) {
             this.nameString = nameString;
-            this.shortNameString = shortNameString;
         }
 
         @Override
         public String toString() {
             return this.nameString;
-        }
-
-        public String toShortString() {
-            return this.shortNameString;
         }
     }
 
     public enum Suit {
         // See definition for Face for how this works
-        SPADES("Spades", "♠"),
-        CLUBS("Clubs", "♣"),
-        HEARTS("Hearts", "♡"),
-        DIAMONDS("Diamonds", "♢");
+        SPADES("♠"),
+        CLUBS("♣"),
+        HEARTS("♡"),
+        DIAMONDS("♢");
 
         private final String nameString;
-        private final String shortNameString;
 
-        Suit(String nameString, String shortNameString) {
+        Suit(String nameString) {
             this.nameString = nameString;
-            this.shortNameString = shortNameString;
         }
 
         @Override
         public String toString() {
             return this.nameString;
-        }
-
-        public String toShortString() {
-            return this.shortNameString;
         }
     }
 
@@ -157,9 +141,9 @@ public class Main {
             return drawnCards;
         }
 
-        public void printAll(boolean useShortString) {
+        public void printAll() {
             for (Card card : this.cards) {
-                System.out.println(useShortString ? card.toShortString() : card.toString());
+                System.out.println(card.toString());
             }
         }
     }
@@ -198,26 +182,10 @@ public class Main {
             this.cards.addAll(Arrays.asList(newCards));
         }
 
-        public void show() {
-            StringBuilder[] sbs = new StringBuilder[4];
-            for (int i = 0; i < sbs.length; i++) {
-                sbs[i] = new StringBuilder();
-            }
-            for (Card card : this.cards) {
-                sbs[0].append("┌────┐ ");
-                sbs[1].append("│").append(card.toShortString()).append("│ ");
-                sbs[2].append("│    │ ");
-                sbs[3].append("└────┘ ");
-            }
-            for (StringBuilder sb : sbs) {
-                System.out.println(sb.toString());
-            }
-        }
-
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
         //       unless there was actually a change in the cards' content
+        // Used for showing hands vertically
         public String[] toStrings() {
-            // Used for showing hands vertically
             // We'll be using linear equations!
             String[] res = new String[(2 * this.cards.size()) + 3];
 
@@ -226,7 +194,7 @@ public class Main {
                 // The top of card is shown at 2i - 2
                 // The face value is shown at 2i - 1 (because index starts at 0)
                 res[(2 * i) - 2] = "╭────╮";
-                res[(2 * i) - 1] = "│" + this.cards.get(i - 1).toShortString() + "│";
+                res[(2 * i) - 1] = "│" + this.cards.get(i - 1).toString() + "│";
             }
 
             // Show the bottom of the last card
@@ -398,7 +366,7 @@ public class Main {
         }
 
         private void showDealerHand() {
-            this.dealerHand.show();
+            //this.dealerHand.show();
         }
 
         private Option chooseOption(int playerHandIndex) {
@@ -473,7 +441,6 @@ public class Main {
                 this.playerHands.getFirst().addCards(cardBuffer);
             }
 
-            //this.playerHands.get(0).show();
             this.showPlayerHands();
             System.out.println(this.chooseOption(0));
 
