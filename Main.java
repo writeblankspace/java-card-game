@@ -211,6 +211,12 @@ public class Main {
 
             return res;
         }
+
+        public void show() {
+            for (String string : this.toStrings()) {
+                System.out.println(string);
+            }
+        }
     }
 
     public enum Cheat {
@@ -444,7 +450,7 @@ public class Main {
             this.showPlayerHands();
             System.out.println(this.chooseOption(0));
 
-            // TODO: get rid of unused code, add actual game functionality
+            // TODO: add actual game functionality
         }
 
         // Non-debug version of start()
