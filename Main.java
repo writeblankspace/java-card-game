@@ -264,6 +264,7 @@ public class Main {
 
         private Deck deck;
         private ArrayList<Hand> playerHands;
+        private int currentPlayerHandIndex;
         private Hand dealerHand;
 
         private enum Option {
@@ -293,6 +294,7 @@ public class Main {
             // The player starts with a single hand
             this.playerHands = new ArrayList<>();
             this.playerHands.add(new Hand());
+            this.currentPlayerHandIndex = 0;
 
             // Initialise the dealer's hand
             this.dealerHand = new Hand();
@@ -336,18 +338,27 @@ public class Main {
                     this.playerHands, (a, b) -> a.cards.size() - b.cards.size()
             ).cards.size();
 
-            StringBuilder[] sbs = new StringBuilder[(maxLength * 2) + 3];
+            StringBuilder[] sbs = new StringBuilder[(maxLength * 2) + 4];
             String[][] playerHandStringses = new String[this.playerHands.size()][maxLength];
 
-            // For efficiency, populate playerHandStringses
-            // so we don't go O(n^2) on the .toStrings() — just O(n) is alr
+            sbs[0] = new StringBuilder();
+
             for (int i = 0; i < this.playerHands.size(); i++) {
+                // For efficiency, populate playerHandStringses
+                // so we don't go O(n^2) on the .toStrings() — just O(n) is alr
                 String[] playerHandStrings = this.playerHands.get(i).toStrings();
                 playerHandStringses[i] = playerHandStrings;
+
+                // Also make the first StringBuilder row show titles for each hand
+                if (i == this.currentPlayerHandIndex) {
+                    sbs[0].append(" ").append("PLAY").append("  ");
+                } else {
+                    sbs[0].append(" ").append(i + 1).append("     ");
+                }
             }
 
             // Build the string row by row
-            for (int i = 0; i < sbs.length; i++) {
+            for (int i = 1; i < sbs.length; i++) {
                 // Initiate the StringBuilder row
                 sbs[i] = new StringBuilder();
 
@@ -356,13 +367,13 @@ public class Main {
                     String playerHandStringsRow;
 
                     // I don't want no NullPointerExceptions
-                    if (i < playerHandStringses[j].length && playerHandStringses[j][i] != null) {
-                        playerHandStringsRow = playerHandStringses[j][i];
+                    if (i < playerHandStringses[j].length && playerHandStringses[j][i - 1] != null) {
+                        playerHandStringsRow = playerHandStringses[j][i - 1];
                     } else {
                         playerHandStringsRow = "      ";
                     }
 
-                    sbs[i].append(playerHandStringsRow + " ");
+                    sbs[i].append(playerHandStringsRow).append(" ");
                 }
             }
 
@@ -372,7 +383,7 @@ public class Main {
         }
 
         private void showDealerHand() {
-            //this.dealerHand.show();
+            this.dealerHand.show();
         }
 
         private Option chooseOption(int playerHandIndex) {
@@ -409,7 +420,7 @@ public class Main {
             StringBuilder optionsSB = new StringBuilder();
 
             for (int i = 0; i < options.size(); i++) {
-                optionsSB.append("(" + (i + 1) + ") " + options.get(i) + "\n");
+                optionsSB.append("(").append(i + 1).append(") ").append(options.get(i)).append("\n");
             }
 
             // Ask the player what they want to do
