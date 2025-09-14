@@ -151,7 +151,9 @@ public class Main {
         STAND("[STND]"),
         DOUBLE_DOWN("[DBLD]"),
         SURRENDER("[SURR]"),
-        BLACKJACK("[ 21 ]"),
+        BUST("[BUST]"),
+        TWENTY_ONE("[ 21 ]"),
+        BLACKJACK("[ BJ ]"),
         SPLIT("-SPLT-");
 
         private final String shorthand;
@@ -178,6 +180,11 @@ public class Main {
 
         public void addCards(Card[] newCards) {
             this.cards.addAll(Arrays.asList(newCards));
+        }
+
+        // TODO: implement this
+        public void getValue() {
+
         }
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
@@ -445,13 +452,9 @@ public class Main {
         }
 
         // TODO: implement this
-        private boolean checkBlackjack(int playerHandIndex) {
+        // Checks if the hand is a 21 or a bust
+        private boolean updateStatus(int playerHandIndex) {
            return false;
-        }
-
-        // TODO: implement this
-        private boolean checkBust(int playerHandIndex) {
-            return false;
         }
 
         // Play the chosen option
