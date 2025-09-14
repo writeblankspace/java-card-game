@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Blackjack {
     // Used for special statuses for the hand
@@ -113,6 +114,7 @@ public class Blackjack {
         HandStatus[] statusesForEachHand;
         Cheat[] cheats;
         int blackjackCardIndex;
+        Cards.Face[] deckCardFaces;
 
         GameDebugger() {
             // Set default values
@@ -120,6 +122,7 @@ public class Blackjack {
             this.statusesForEachHand = new HandStatus[]{};
             this.cheats = new Cheat[]{};
             this.blackjackCardIndex = -1;
+            this.deckCardFaces = new Cards.Face[]{};
         }
 
         GameDebugger setNumCardsPerHand(int[] numCardsPerHand) {
@@ -139,6 +142,11 @@ public class Blackjack {
 
         GameDebugger setBlackjackCardIndex(int blackjackCardIndex) {
             this.blackjackCardIndex = blackjackCardIndex;
+            return this;
+        }
+
+        GameDebugger setDeckCardFaces(Cards.Face[] cardFaces) {
+            this.deckCardFaces = cardFaces;
             return this;
         }
 
@@ -196,6 +204,10 @@ public class Blackjack {
                 for (int i = 0; i < this.deck.cards.length; i++) {
                     this.deck.cards[i].face = Cards.Face.ACE;
                 }
+            }
+
+            for (int i = 0; i < debugger.deckCardFaces.length; i++) {
+                this.deck.cards[i].face = debugger.deckCardFaces[i];
             }
 
             // Re-initiate hands
@@ -266,6 +278,8 @@ public class Blackjack {
             for (StringBuilder sb : sbs) {
                 System.out.println(sb.toString());
             }
+
+            System.out.println();
         }
 
         private void showDealerHand() {
@@ -279,6 +293,8 @@ public class Blackjack {
             ArrayList<Option> options = new ArrayList<>(List.of(
                     Option.HIT, Option.STAND
             ));
+
+            // TODO: hitting split aces is not allowed
 
             // If there are only two cards
             if (playerHand.cards.size() == 2) {
@@ -326,8 +342,26 @@ public class Blackjack {
         }
 
         // TODO: implement this
-        // Checks if the hand is a 21 or a bust
+        // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
         private boolean updateStatus(int playerHandIndex) {
+            Hand playerHand = this.playerHands.get(playerHandIndex);
+            int handValue = playerHand.getValue();
+
+            if (handValue == 21) {
+                // It could be a Blackjack!
+                if (playerHand.cards.size() == 2) {
+                    if (playerHand.cards.stream().anyMatch(x -> x.face == Cards.Face.ACE)
+                            && playerHand.status == HandStatus.SPLIT) {
+                        // A 10-valued card and an ace from a split isn't considered a blackjack
+                        playerHand.status = HandStatus.TWENTY_ONE;
+                    } else {
+                        // It's a blackjack!
+                        playerHand.status = HandStatus.BLACKJACK;
+                    }
+
+                }
+
+            }
             return false;
         }
 
