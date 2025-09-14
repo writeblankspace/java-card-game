@@ -64,8 +64,8 @@ public class Main {
         // See definition for Face for how this works
         SPADES("♠"),
         CLUBS("♣"),
-        HEARTS("♡"),
-        DIAMONDS("♢");
+        HEARTS("♥"),
+        DIAMONDS("♦");
 
         private final String nameString;
 
