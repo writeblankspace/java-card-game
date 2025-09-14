@@ -9,6 +9,8 @@ public class Main {
         }
     }
 
+    // TODO: adhere to https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html for docstrings
+
     public static void main(String[] args) throws Cards.DeckEmptyException, WhatTheHeckException {
         // I have no idea how Blackjack works except that you want a 21
         // So here's the Wikipedia article: https://en.wikipedia.org/wiki/Blackjack
@@ -17,8 +19,8 @@ public class Main {
 
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
-                .setCheats(new Blackjack.Cheat[]{})
-                .setNumCardsPerHand(new int[]{2});
+                .setCheats(new Blackjack.Cheat[]{Blackjack.Cheat.ALL_ACES})
+                .setNumCardsPerHand(new int[]{2, 3, 4, 5});
 
         game.start(debugger);
     }

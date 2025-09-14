@@ -30,25 +30,27 @@ public class Cards {
     public enum Face {
         // Each enum value acts like a function
         // We're calling the constructor, Face()
-        ACE(" A"),
-        TWO(" 2"),
-        THREE(" 3"),
-        FOUR(" 4"),
-        FIVE(" 5"),
-        SIX(" 6"),
-        SEVEN(" 7"),
-        EIGHT(" 8"),
-        NINE(" 9"),
-        TEN("10"),
-        JACK(" J"),
-        QUEEN(" Q"),
-        KING(" K");
+        ACE(" A", 11),
+        TWO(" 2", 2),
+        THREE(" 3", 3),
+        FOUR(" 4", 4),
+        FIVE(" 5", 5),
+        SIX(" 6", 6),
+        SEVEN(" 7", 7),
+        EIGHT(" 8", 8),
+        NINE(" 9", 9),
+        TEN("10", 10),
+        JACK(" J", 10),
+        QUEEN(" Q", 10),
+        KING(" K", 10);
 
         // We want a String version of each value
         private final String nameString;
+        public final int value;
 
-        Face(String nameString) {
+        Face(String nameString, int value) {
             this.nameString = nameString;
+            this.value = value;
         }
 
         @Override

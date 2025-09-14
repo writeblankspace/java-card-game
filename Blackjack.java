@@ -37,9 +37,30 @@ public class Blackjack {
             this.cards.addAll(Arrays.asList(newCards));
         }
 
-        // TODO: implement this
-        public void getValue() {
+        public int getValue() {
+            int res = 0;
+            int numAces = 0;
 
+            // Set res to the sum of the values of all cards except aces
+            for (Cards.Card card : this.cards) {
+                if (card.face == Cards.Face.ACE) {
+                   numAces++;
+                } else {
+                    res += card.face.value;
+                }
+            }
+
+            // All aces are valued at 11 by default, unless this causes a bust (i.e. res > 21)
+            // in which case they are valued at 1
+            for (int i = 0; i < numAces; i++) {
+                if (res + 11 <= 21) {
+                    res += 11;
+                } else {
+                    res += 1;
+                }
+            }
+
+            return res;
         }
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
@@ -47,7 +68,7 @@ public class Blackjack {
         // Used for showing hands vertically
         public String[] toStrings() {
             // We'll be using linear equations!
-            String[] res = new String[(2 * this.cards.size()) + 3];
+            String[] res = new String[(2 * this.cards.size()) + 4];
 
             for (int i = 1; i <= this.cards.size(); i++) {
                 // Each card takes up two lines, so we need some linear equations
@@ -63,10 +84,12 @@ public class Blackjack {
             res[index] = "│    │";
             res[index + 1] = "╰────╯";
 
-            if (this.status != null) {
+            if (this.status == HandStatus.SPLIT) {
+                res[index + 2] = " * " + String.format("%1$2s", this.getValue()) + " ";
+            } else if (this.status != null) {
                 res[index + 2] = this.status.toString();
             } else {
-                res[index + 2] = "      ";
+                res[index + 2] = "   " + String.format("%1$2s", this.getValue()) + " ";
             }
 
             return res;
@@ -267,11 +290,7 @@ public class Blackjack {
                 Set<Cards.Face> VALUE_OF_TEN = Set.of(
                         Cards.Face.ACE, Cards.Face.JACK, Cards.Face.QUEEN, Cards.Face.KING
                 );
-                if ((playerHand.cards.get(0).face == playerHand.cards.get(1).face // same face
-                        // both have a value of ten
-                        || (VALUE_OF_TEN.contains(playerHand.cards.get(0).face)
-                        && VALUE_OF_TEN.contains(playerHand.cards.get(1).face)))
-                        // there are less than 5 hands in play (max 5 hands in play)
+                if (playerHand.cards.get(0).face.value == playerHand.cards.get(1).face.value
                         && playerHands.size() < 5) {
                     options.add(Option.SPLIT);
                 }
