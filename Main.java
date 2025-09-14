@@ -5,8 +5,12 @@ public class Main {
 
     // Exceptions
     public static class DeckEmptyException extends Exception {
-
         public DeckEmptyException(String message) {
+            super(message);
+        }
+    }
+    public static class WhatTheHeckException extends Exception {
+        public WhatTheHeckException(String message) {
             super(message);
         }
     }
@@ -440,8 +444,70 @@ public class Main {
             return options.get(chosenOption - 1);
         }
 
+        // TODO: implement this
+        private boolean checkBlackjack(int playerHandIndex) {
+           return false;
+        }
+
+        // TODO: implement this
+        private boolean checkBust(int playerHandIndex) {
+            return false;
+        }
+
+        // Play the chosen option
+        private void playOption(int playerHandIndex, Option option) throws DeckEmptyException, WhatTheHeckException {
+            // HIT: draw a new card
+            // STAND: stop drawing cards
+            // DOUBLE_DOWN: double the bet and draw a card; stop drawing cards
+            // SPLIT: split the two cards into two hands; draw a card for each hand
+            // SURRENDER: get half the bet back and stop drawing cards
+            Card[] cardsBuffer;
+            Hand playerHand = this.playerHands.get(playerHandIndex);
+
+            switch (option) {
+                case Option.HIT:
+                    // Draw a new card
+                    cardsBuffer = deck.drawCards(1);
+                    playerHand.addCards(cardsBuffer);
+                    break;
+                case Option.STAND:
+                    // Stop drawing cards
+                    playerHand.status = HandStatus.STAND;
+                    break;
+                case Option.DOUBLE_DOWN:
+                    // (Double the bet) and draw a card
+                    cardsBuffer = deck.drawCards(1);
+                    playerHand.addCards(cardsBuffer);
+                    // Stop drawing cards
+                    playerHand.status = HandStatus.DOUBLE_DOWN;
+                    break;
+                case Option.SPLIT:
+                    // Create a new hand and transfer second card in current hand to it
+                    this.playerHands.add(new Hand());
+                    Hand newPlayerHand = this.playerHands.getLast();
+                    Card cardBuffer = playerHand.cards.getLast();
+                    newPlayerHand.cards.add(cardBuffer);
+                    playerHand.cards.removeLast();
+                    // Draw a card for each hand
+                    cardsBuffer = this.deck.drawCards(2);
+                    playerHand.cards.add(cardsBuffer[0]);
+                    newPlayerHand.cards.add(cardsBuffer[1]);
+                    // Set the status
+                    playerHand.status = HandStatus.SPLIT;
+                    newPlayerHand.status = HandStatus.SPLIT;
+                    break;
+                case Option.SURRENDER:
+                    // (Get half the bet back) and stop drawing cards
+                    playerHand.status = HandStatus.SURRENDER;
+                    break;
+                default:
+                    throw new WhatTheHeckException("Option does not match any Option????");
+            }
+
+        }
+
         // Play the game out
-        public void start(GameDebugger debugger) throws DeckEmptyException {
+        public void start(GameDebugger debugger) throws DeckEmptyException, WhatTheHeckException {
             boolean mayInitiateHand = this.debugHands(debugger);
 
             if (mayInitiateHand) {
@@ -452,20 +518,22 @@ public class Main {
             }
 
             this.showPlayerHands();
-            System.out.println(this.chooseOption(0));
+            Option option = this.chooseOption(0);
+            this.playOption(0, option);
+            this.showPlayerHands();
 
             // TODO: add actual game functionality
         }
 
         // Non-debug version of start()
-        public void start() throws DeckEmptyException {
+        public void start() throws DeckEmptyException, WhatTheHeckException {
             // Use the default GameDebugger
             GameDebugger debugger = new GameDebugger();
             start(debugger);
         }
     }
 
-    public static void main(String[] args) throws DeckEmptyException {
+    public static void main(String[] args) throws DeckEmptyException, WhatTheHeckException {
         // I have no idea how Blackjack works except that you want a 21
         // So here's the Wikipedia article: https://en.wikipedia.org/wiki/Blackjack
 
@@ -473,8 +541,8 @@ public class Main {
 
         // Create a GameDebugger instance
         GameDebugger debugger = new GameDebugger()
-                .setCheats(new Cheat[]{Cheat.ALL_ACES})
-                .setNumCardsPerHand(new int[]{2, 3, 4, 5});
+                .setCheats(new Cheat[]{})
+                .setNumCardsPerHand(new int[]{2});
 
         game.start(debugger);
     }
