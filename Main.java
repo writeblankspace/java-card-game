@@ -517,6 +517,13 @@ public class Main {
                 this.playerHands.getFirst().addCards(cardBuffer);
             }
 
+            // TODO: move on from this weird demo
+            // Currently, this demo plays a single move and shows the result.
+            // We must checkBlackjack() as soon as the game starts and after every playOption()
+            // Then move on to the next hand after playOption(), until the end of the turn.
+            // This continues until all hands are done (any Option except Option.SPLIT).
+            // At which point the dealer plays, and winners are decided.
+
             this.showPlayerHands();
             Option option = this.chooseOption(0);
             this.playOption(0, option);
@@ -541,7 +548,7 @@ public class Main {
 
         // Create a GameDebugger instance
         GameDebugger debugger = new GameDebugger()
-                .setCheats(new Cheat[]{Cheat.ALL_ACES})
+                .setCheats(new Cheat[]{})
                 .setNumCardsPerHand(new int[]{2});
 
         game.start(debugger);
