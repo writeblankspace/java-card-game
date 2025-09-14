@@ -541,7 +541,7 @@ public class Main {
 
         // Create a GameDebugger instance
         GameDebugger debugger = new GameDebugger()
-                .setCheats(new Cheat[]{})
+                .setCheats(new Cheat[]{Cheat.ALL_ACES})
                 .setNumCardsPerHand(new int[]{2});
 
         game.start(debugger);
