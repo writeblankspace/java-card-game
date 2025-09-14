@@ -287,9 +287,6 @@ public class Blackjack {
                 // If the player can split
                 // i.e. both starting cards have the same value
                 //      and there are less than 5 hands in play
-                Set<Cards.Face> VALUE_OF_TEN = Set.of(
-                        Cards.Face.ACE, Cards.Face.JACK, Cards.Face.QUEEN, Cards.Face.KING
-                );
                 if (playerHand.cards.get(0).face.value == playerHand.cards.get(1).face.value
                         && playerHands.size() < 5) {
                     options.add(Option.SPLIT);
