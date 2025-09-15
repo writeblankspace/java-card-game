@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Blackjack {
     // Used for special statuses for the hand
@@ -45,7 +44,7 @@ public class Blackjack {
             // Set res to the sum of the values of all cards except aces
             for (Cards.Card card : this.cards) {
                 if (card.face == Cards.Face.ACE) {
-                   numAces++;
+                    numAces++;
                 } else {
                     res += card.face.value;
                 }
@@ -105,7 +104,6 @@ public class Blackjack {
 
     public enum Cheat {
         ALL_ACES,
-        BLACKJACK
     }
 
     // Tools for debugging a game
@@ -196,7 +194,8 @@ public class Blackjack {
 
         // Rigs the game for debug purposes
         // Returns true if initial two cards may be added
-        private boolean debugHands(GameDebugger debugger) throws Cards.DeckEmptyException {
+        private boolean debugHands(GameDebugger debugger)
+                throws Cards.DeckEmptyException {
             boolean mayInitiateHand = true;
 
             if (Arrays.asList(debugger.cheats).contains(Cheat.ALL_ACES)) {
@@ -288,13 +287,16 @@ public class Blackjack {
 
         private Option chooseOption(int playerHandIndex) {
             Hand playerHand = this.playerHands.get(playerHandIndex);
+            ArrayList<Option> options = new ArrayList<>();
 
-            // Default options
-            ArrayList<Option> options = new ArrayList<>(List.of(
-                    Option.HIT, Option.STAND
-            ));
+            // Hitting split aces is not allowed
+            if (playerHand.cards.stream().noneMatch(x -> x.face == Cards.Face.ACE)
+                    && playerHand.status != HandStatus.SPLIT) {
+                options.add(Option.HIT);
+            }
 
-            // TODO: hitting split aces is not allowed
+            // Literally the only option that you can unconditionally do
+            options.add(Option.STAND);
 
             // If there are only two cards
             if (playerHand.cards.size() == 2) {
@@ -308,9 +310,10 @@ public class Blackjack {
                     options.add(Option.SPLIT);
                 }
 
-                // TODO: surrenderring after a split is not allowed
-
-                options.add(Option.SURRENDER);
+                // Surrendering after a split is not allowed
+                if (playerHand.status != HandStatus.SPLIT) {
+                    options.add(Option.SURRENDER);
+                }
             }
 
             StringBuilder optionsSB = new StringBuilder();
@@ -343,10 +346,8 @@ public class Blackjack {
             return options.get(chosenOption - 1);
         }
 
-        // TODO: implement this
         // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
-        // Returns true if status was updated
-        private boolean updateStatus(int playerHandIndex) {
+        private void updateStatus(int playerHandIndex) {
             Hand playerHand = this.playerHands.get(playerHandIndex);
             int handValue = playerHand.getValue();
 
@@ -363,17 +364,18 @@ public class Blackjack {
                 } else {
                     playerHand.status = HandStatus.TWENTY_ONE;
                 }
-                return true;
             } else if (handValue > 21) {
                 // Whoops, busted
                 playerHand.status = HandStatus.BUST;
-                return true;
+            } else {
+                // The turn is over and the hand is below 21 and fine
+                playerHand.status = null;
             }
-            return false;
         }
 
         // Play the chosen option
-        private void playOption(int playerHandIndex, Option option) throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        private void playOption(int playerHandIndex, Option option)
+                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
             // HIT: draw a new card
             // STAND: stop drawing cards
             // DOUBLE_DOWN: double the bet and draw a card; stop drawing cards
@@ -383,15 +385,18 @@ public class Blackjack {
             Hand playerHand = this.playerHands.get(playerHandIndex);
 
             switch (option) {
+
                 case Option.HIT:
                     // Draw a new card
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
                     break;
+
                 case Option.STAND:
                     // Stop drawing cards
                     playerHand.status = HandStatus.STAND;
                     break;
+
                 case Option.DOUBLE_DOWN:
                     // (Double the bet) and draw a card
                     cardsBuffer = deck.drawCards(1);
@@ -399,6 +404,7 @@ public class Blackjack {
                     // Stop drawing cards
                     playerHand.status = HandStatus.DOUBLE_DOWN;
                     break;
+
                 case Option.SPLIT:
                     // Create a new hand and transfer second card in current hand to it
                     this.playerHands.add(new Hand());
@@ -414,10 +420,12 @@ public class Blackjack {
                     playerHand.status = HandStatus.SPLIT;
                     newPlayerHand.status = HandStatus.SPLIT;
                     break;
+
                 case Option.SURRENDER:
                     // (Get half the bet back) and stop drawing cards
                     playerHand.status = HandStatus.SURRENDER;
                     break;
+
                 default:
                     throw new Main.WhatTheHeckException("Option does not match any Option????");
             }
@@ -425,7 +433,8 @@ public class Blackjack {
         }
 
         // Play the game out
-        public void start(GameDebugger debugger) throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        public void start(GameDebugger debugger)
+                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
             boolean mayInitiateHand = this.debugHands(debugger);
 
             if (mayInitiateHand) {
@@ -455,7 +464,8 @@ public class Blackjack {
         }
 
         // Non-debug version of start()
-        public void start() throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        public void start()
+                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
             // Use the default GameDebugger
             GameDebugger debugger = new GameDebugger();
             start(debugger);
