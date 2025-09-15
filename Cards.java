@@ -1,15 +1,15 @@
 import java.util.Random;
 
 public class Cards {
-    // Exceptions
     public static class DeckEmptyException extends Exception {
         public DeckEmptyException(String message) {
             super(message);
         }
     }
 
-    // Define the user-defined datatypes used to represent each card
-    // Closest to a RECORD I can find in Java
+    /**
+     * A general-purpose card from a standard 52-card deck.
+     */
     public static class Card {
 
         Face face;
@@ -21,12 +21,33 @@ public class Cards {
             this.suit = suit;
         }
 
+        /**
+         * Just like your average <code>.toString()</code> method.
+         * <p>
+         * The card is represented in symbols as its suit and face, which is
+         * useful for printing it as a 'card' to the console.
+         *
+         * @return  the string representation of the card
+         */
         @Override
         public String toString() {
             return this.suit.toString() + " " + this.face.toString();
         }
     }
 
+    /**
+     * The face of a card.
+     * <p>
+     * The values of each card are based on their values in Blackjack.
+     * <p>
+     * Note that <code>ACE</code> has a default value of 11.
+     * This is a default value and must be overridden by the program so that
+     * the ace may also take the value of 1, according to the rules of
+     * Blackjack.
+     * <p>
+     * Their <code>.toString()</code> values are used for printing 'cards'
+     * to the console. Hence, the long names of each face are not used.
+     */
     public enum Face {
         // Each enum value acts like a function
         // We're calling the constructor, Face()
@@ -59,6 +80,13 @@ public class Cards {
         }
     }
 
+    /**
+     * The suit of a card.
+     * <p>
+     * Their <code>.toString()</code> values are used for printing 'cards'
+     * to the console. Hence, each suit is represented by its single-character
+     * symbol.
+     */
     public enum Suit {
         // See definition for Face for how this works
         SPADES("♠"),
@@ -78,6 +106,13 @@ public class Cards {
         }
     }
 
+    /**
+     * A standard deck of 52 cards, by default.
+     * <p>
+     * It is implemented like a stack (because what is a deck but a stack of
+     * cards?), except cards are not replaced into the deck. The integer
+     * variable <code>top</code> acts like a pointer.
+     */
     public static class Deck {
 
         public Card[] cards;
@@ -102,6 +137,13 @@ public class Cards {
         }
 
         // Methods
+
+        /**
+         * Shuffles the deck using a modern Fisher-Yates shuffle.
+         * <p>
+         * Assuming there are no logical errors in the code, this shuffle is
+         * unbiased. The house isn't always out to get you.
+         */
         public void shuffle() {
             Random r = new Random();
             // Shuffle cards using the Fisher-Yates shuffle
@@ -115,6 +157,14 @@ public class Cards {
             }
         }
 
+        /**
+         * Draws a card from the top of the deck.
+         *
+         * @param n     the number of cards to draw
+         * @return      the <code>Card</code> drawn from the deck
+         * @throws Cards.DeckEmptyException the deck is empty and thus a card
+         *                                  cannot be drawn from it
+         */
         public Card[] drawCards(int n) throws Cards.DeckEmptyException {
             // Draw a card from the top of the deck. Does not get replaced.
             // I want to use an array (for Visual Basic reasons), so we just replace the card with null
@@ -134,6 +184,12 @@ public class Cards {
             return drawnCards;
         }
 
+        /**
+         * Prints all the cards in the deck one by one.
+         * <p>
+         * It will generally look ugly and unpolished, but it gets the job done.
+         * Only used for debugging and may be removed anytime.
+         */
         public void printAll() {
             for (Card card : this.cards) {
                 System.out.println(card.toString());

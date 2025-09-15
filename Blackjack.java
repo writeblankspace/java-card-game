@@ -2,6 +2,13 @@ import java.util.*;
 
 public class Blackjack {
     // Used for special statuses for the hand
+
+    /**
+     * The different statuses that a hand in Blackjack may take.
+     * <p>
+     * Their <code>.toString()</code> values are used for printing 'hands'
+     * to the console, and use exactly 6 characters for alignment.
+     */
     public enum HandStatus {
         STAND("[STND]"),
         DOUBLE_DOWN("[DBLD]"),
@@ -23,11 +30,26 @@ public class Blackjack {
         }
     }
 
+    /**
+     * A single hand in a game of Blackjack.
+     * <p>
+     * A hand may contain any number of cards, but due to how Blackjack works
+     * it may only contain 2 to 21 cards, assuming the deck is bottomless and
+     * contains at least 21 aces.
+     * <p>
+     * The status of this hand may be set to any from <code>HandStatus</code>.
+     * The turn when the status was updated must be recorded in
+     * <code>turnStatusUpdated</code>, to ensure the program works as expected.
+     * Thus, the use of <code>updateStatus()</code> is recommended.
+     */
     public static class Hand {
 
         public ArrayList<Cards.Card> cards;
         public HandStatus status;
         public int turnStatusUpdated;
+
+        // TODO: make HandStatus and turnStatusUpdated private, and implement
+        //       getters and setters instead
 
         Hand() {
             this.cards = new ArrayList<>();
@@ -35,10 +57,21 @@ public class Blackjack {
             this.turnStatusUpdated = -1;
         }
 
+        // TODO: initiate() method, for when the hand does not come from a split
+        //       or define Hand() but with an extra parameter
+
         public void addCards(Cards.Card[] newCards) {
             this.cards.addAll(Arrays.asList(newCards));
         }
 
+        /**
+         * Calculates the value of this hand and returns it.
+         * <p>
+         * It ensures that aces are valued correctly according to the rules
+         * of Blackjack.
+         *
+         * @return  the value of this hand
+         */
         public int getValue() {
             int res = 0;
             int numAces = 0;
@@ -66,6 +99,18 @@ public class Blackjack {
         }
 
         // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
+
+        /**
+         * Updates the status of this hand, especially when the hand is valued
+         * at 21 or higher.
+         * <p>
+         * Only updates the status of the hand if the status is
+         * <code>null</code> or <code>HandStatus.SPLIT</code>, as a hand with
+         * any other statuses wouldn't have gotten any new cards since its
+         * status was updated.
+         *
+         * @param turn  the current turn in the game
+         */
         public void updateStatus(int turn) {
             // All statuses except for SPLIT mean that the hand takes no more cards
             // So leave the status be if it is null or SPLIT
@@ -98,7 +143,13 @@ public class Blackjack {
             }
         }
 
-        // Same as above, but with a specified status
+        /**
+         * Updates the status of this hand to the <code>newStatus</code>, then
+         * runs <code>updateStatus(int turn)</code>.
+         *
+         * @param turn      the current turn in the game
+         * @param newStatus the status to set this hand to
+         */
         public void updateStatus(int turn, HandStatus newStatus) {
             this.status = newStatus;
             this.turnStatusUpdated = turn;
@@ -109,6 +160,14 @@ public class Blackjack {
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
         //       unless there was actually a change in the cards' content
         // Used for showing hands vertically
+
+        /**
+         * Returns a <code>String[]</code> used for printing the contents of this
+         * hand vertically on the console. Each element in this returned
+         * Array represents a single line to be printed.
+         *
+         * @return  lines that can be printed to show this hand's contents
+         */
         public String[] toStrings() {
             // We'll be using linear equations!
             String[] res = new String[(2 * this.cards.size()) + 4];
@@ -137,19 +196,25 @@ public class Blackjack {
 
             return res;
         }
-
-        public void show() {
-            for (String string : this.toStrings()) {
-                System.out.println(string);
-            }
-        }
     }
 
+    /**
+     * Cheats used for <code>GameDebugger</code>.
+     * <ul>
+     *     <li><code>ALL_ACES</code>: all cards on the deck are replaced by
+     *         aces. May be overridden by
+     *         <code>GameDebugger.deckCardFaces</code>.</li>
+     * </ul>
+     */
     public enum Cheat {
         ALL_ACES,
     }
 
-    // Tools for debugging a game
+    /**
+     * A toolbox with many fancy cheats used for debugging. Allows the
+     * programmer to alter parts of the game, such as the number of cards in
+     * each hand or what cards are at the top of the deck.
+     */
     public static class GameDebugger {
         int[] numCardsPerHand;
         HandStatus[] statusesForEachHand;
@@ -166,10 +231,29 @@ public class Blackjack {
             this.deckCardFaces = new Cards.Face[]{};
         }
 
+        /**
+         * Sets the number of cards in each hand at the beginning of the game.
+         * Note that the hands' statuses are not updated when the game starts,
+         * so most hands with more than two cards may end up busting before the
+         * first turn.
+         * <p>
+         * For example, setting <code>numCardsPerHand</code> to
+         * <code>{2, 3, 4, 5}</code> lets the player start with 4 hands with 2,
+         * 3, 4 and 5 cards, respectively.
+         * <p>
+         * As this is a debugging tool, nothing is stopping the programmer from
+         * setting the number of cards in a hand to 1. This is not recommended
+         * as the program expects the number of cards to always be 2 or more.
+         *
+         * @param numCardsPerHand   the number of cards in each hand
+         * @return                  this GameDebugger
+         */
         GameDebugger setNumCardsPerHand(int[] numCardsPerHand) {
             this.numCardsPerHand = numCardsPerHand;
             return this;
         }
+
+        // TODO: keep updating docstrings
 
         GameDebugger setStatusesForEachHand(HandStatus[] statusesForEachHand) {
             this.statusesForEachHand = statusesForEachHand;
