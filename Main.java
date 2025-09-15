@@ -21,11 +21,8 @@ public class Main {
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
                 .setCheats(new Blackjack.Cheat[]{})
                 .setDeckCardFaces(new Cards.Face[]{
-                        Cards.Face.FIVE,
-                        Cards.Face.SIX,
-                        Cards.Face.TEN
                 })
-                .setNumCardsPerHand(new int[]{2});
+                .setNumCardsPerHand(new int[]{2, 2, 3, 3});
 
         game.start(debugger);
     }

@@ -308,6 +308,8 @@ public class Blackjack {
                     options.add(Option.SPLIT);
                 }
 
+                // TODO: surrenderring after a split is not allowed
+
                 options.add(Option.SURRENDER);
             }
 
@@ -435,6 +437,9 @@ public class Blackjack {
 
             // TODO: move on from this weird demo
             // Currently, this demo plays a single move and shows the result.
+
+            // The player may want to read the rules before playing.
+            // The player may choose how many initial hands to have.
             // We must checkBlackjack() as soon as the game starts and after every playOption()
             // Then move on to the next hand after playOption(), until the end of the turn.
             // This continues until all hands are done (any Option except Option.SPLIT).
