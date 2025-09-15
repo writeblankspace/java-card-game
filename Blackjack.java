@@ -27,10 +27,12 @@ public class Blackjack {
 
         public ArrayList<Cards.Card> cards;
         public HandStatus status;
+        public int turnStatusUpdated;
 
         Hand() {
             this.cards = new ArrayList<>();
             this.status = null;
+            this.turnStatusUpdated = -1;
         }
 
         public void addCards(Cards.Card[] newCards) {
@@ -61,6 +63,47 @@ public class Blackjack {
             }
 
             return res;
+        }
+
+        // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
+        public void updateStatus(int turn) {
+            // All statuses except for SPLIT mean that the hand takes no more cards
+            // So leave the status be if it is null or SPLIT
+            if (this.status == null || this.status == HandStatus.SPLIT) {
+                int handValue = this.getValue();
+
+                if (handValue == 21) {
+                    // It could be a Blackjack!
+                    if (this.cards.size() == 2) {
+                        // A 10-valued card and an ace from a split isn't considered a blackjack
+                        if (this.cards.stream().anyMatch(x -> x.face == Cards.Face.ACE)
+                                && this.status == HandStatus.SPLIT) {
+                            this.status = HandStatus.TWENTY_ONE;
+                        } else {
+                            this.status = HandStatus.BLACKJACK;
+                        }
+                    } else {
+                        this.status = HandStatus.TWENTY_ONE;
+                    }
+                } else if (handValue > 21) {
+                    // Whoops, busted
+                    this.status = HandStatus.BUST;
+                } else if (!(this.turnStatusUpdated == turn && this.status == HandStatus.SPLIT)) {
+                    // The turn is over and the hand is below 21
+                    // And the status wasn't updated as a split this turn
+                    this.status = null;
+                }
+
+                this.turnStatusUpdated = turn;
+            }
+        }
+
+        // Same as above, but with a specified status
+        public void updateStatus(int turn, HandStatus newStatus) {
+            this.status = newStatus;
+            this.turnStatusUpdated = turn;
+
+            this.updateStatus(turn);
         }
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
@@ -158,6 +201,7 @@ public class Blackjack {
         private ArrayList<Hand> playerHands;
         private int currentPlayerHandIndex;
         private Hand dealerHand;
+        private int turn;
 
         private enum Option {
             HIT("hit"),
@@ -190,6 +234,9 @@ public class Blackjack {
 
             // Initialise the dealer's hand
             this.dealerHand = new Hand();
+
+            // Begin the first turn!
+            this.turn = 0;
         }
 
         // Rigs the game for debug purposes
@@ -290,8 +337,8 @@ public class Blackjack {
             ArrayList<Option> options = new ArrayList<>();
 
             // Hitting split aces is not allowed
-            if (playerHand.cards.stream().noneMatch(x -> x.face == Cards.Face.ACE)
-                    && playerHand.status != HandStatus.SPLIT) {
+            if (!(playerHand.cards.get(0).face == Cards.Face.ACE
+                    && playerHand.status == HandStatus.SPLIT)) {
                 options.add(Option.HIT);
             }
 
@@ -346,33 +393,6 @@ public class Blackjack {
             return options.get(chosenOption - 1);
         }
 
-        // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
-        private void updateStatus(int playerHandIndex) {
-            Hand playerHand = this.playerHands.get(playerHandIndex);
-            int handValue = playerHand.getValue();
-
-            if (handValue == 21) {
-                // It could be a Blackjack!
-                if (playerHand.cards.size() == 2) {
-                    // A 10-valued card and an ace from a split isn't considered a blackjack
-                    if (playerHand.cards.stream().anyMatch(x -> x.face == Cards.Face.ACE)
-                            && playerHand.status == HandStatus.SPLIT) {
-                        playerHand.status = HandStatus.TWENTY_ONE;
-                    } else {
-                        playerHand.status = HandStatus.BLACKJACK;
-                    }
-                } else {
-                    playerHand.status = HandStatus.TWENTY_ONE;
-                }
-            } else if (handValue > 21) {
-                // Whoops, busted
-                playerHand.status = HandStatus.BUST;
-            } else {
-                // The turn is over and the hand is below 21 and fine
-                playerHand.status = null;
-            }
-        }
-
         // Play the chosen option
         private void playOption(int playerHandIndex, Option option)
                 throws Cards.DeckEmptyException, Main.WhatTheHeckException {
@@ -394,7 +414,7 @@ public class Blackjack {
 
                 case Option.STAND:
                     // Stop drawing cards
-                    playerHand.status = HandStatus.STAND;
+                    playerHand.updateStatus(this.turn, HandStatus.STAND);
                     break;
 
                 case Option.DOUBLE_DOWN:
@@ -402,7 +422,7 @@ public class Blackjack {
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
                     // Stop drawing cards
-                    playerHand.status = HandStatus.DOUBLE_DOWN;
+                    playerHand.updateStatus(this.turn, HandStatus.DOUBLE_DOWN);
                     break;
 
                 case Option.SPLIT:
@@ -417,13 +437,13 @@ public class Blackjack {
                     playerHand.cards.add(cardsBuffer[0]);
                     newPlayerHand.cards.add(cardsBuffer[1]);
                     // Set the status
-                    playerHand.status = HandStatus.SPLIT;
-                    newPlayerHand.status = HandStatus.SPLIT;
+                    playerHand.updateStatus(this.turn, HandStatus.SPLIT);
+                    newPlayerHand.updateStatus(this.turn, HandStatus.SPLIT);
                     break;
 
                 case Option.SURRENDER:
                     // (Get half the bet back) and stop drawing cards
-                    playerHand.status = HandStatus.SURRENDER;
+                    playerHand.updateStatus(this.turn, HandStatus.SURRENDER);
                     break;
 
                 default:
@@ -457,7 +477,7 @@ public class Blackjack {
             this.showPlayerHands();
             Option option = this.chooseOption(0);
             this.playOption(0, option);
-            this.updateStatus(0);
+            this.playerHands.get(0).updateStatus(0);
             this.showPlayerHands();
 
             // TODO: add actual game functionality
