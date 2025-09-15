@@ -76,7 +76,7 @@ continues drawing cards.
     - If the dealer does not bust, each remaining bet wins if its hand is higher
         than the dealer's hand, as loses otherwise.
 
-    - In the case of a tie, bets are returned without adjustment.
+    - In the case of a tie ("push"), bets are returned without adjustment.
 
     - A blackjack beats any hand that is not a blackjack (even a hand with a
         value of 21).

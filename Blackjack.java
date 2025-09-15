@@ -302,9 +302,9 @@ public class Blackjack {
 
                 // If the player can split
                 // i.e. both starting cards have the same value
-                //      and there are less than 5 hands in play
+                //      and there are less than 7 hands in play
                 if (playerHand.cards.get(0).face.value == playerHand.cards.get(1).face.value
-                        && playerHands.size() < 5) {
+                        && playerHands.size() < 7) {
                     options.add(Option.SPLIT);
                 }
 
