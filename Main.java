@@ -19,10 +19,11 @@ public class Main {
 
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
-                .setCheats(new Blackjack.Cheat[]{Blackjack.Cheat.ALL_ACES})
+                .setCheats(new Blackjack.Cheat[]{})
                 .setDeckCardFaces(new Cards.Face[]{
-                        Cards.Face.ACE,
-                        Cards.Face.JACK
+                        Cards.Face.FIVE,
+                        Cards.Face.SIX,
+                        Cards.Face.TEN
                 })
                 .setNumCardsPerHand(new int[]{2});
 

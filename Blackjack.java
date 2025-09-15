@@ -343,6 +343,7 @@ public class Blackjack {
 
         // TODO: implement this
         // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
+        // Returns true if status was updated
         private boolean updateStatus(int playerHandIndex) {
             Hand playerHand = this.playerHands.get(playerHandIndex);
             int handValue = playerHand.getValue();
@@ -350,17 +351,21 @@ public class Blackjack {
             if (handValue == 21) {
                 // It could be a Blackjack!
                 if (playerHand.cards.size() == 2) {
+                    // A 10-valued card and an ace from a split isn't considered a blackjack
                     if (playerHand.cards.stream().anyMatch(x -> x.face == Cards.Face.ACE)
                             && playerHand.status == HandStatus.SPLIT) {
-                        // A 10-valued card and an ace from a split isn't considered a blackjack
                         playerHand.status = HandStatus.TWENTY_ONE;
                     } else {
-                        // It's a blackjack!
                         playerHand.status = HandStatus.BLACKJACK;
                     }
-
+                } else {
+                    playerHand.status = HandStatus.TWENTY_ONE;
                 }
-
+                return true;
+            } else if (handValue > 21) {
+                // Whoops, busted
+                playerHand.status = HandStatus.BUST;
+                return true;
             }
             return false;
         }
@@ -438,6 +443,7 @@ public class Blackjack {
             this.showPlayerHands();
             Option option = this.chooseOption(0);
             this.playOption(0, option);
+            this.updateStatus(0);
             this.showPlayerHands();
 
             // TODO: add actual game functionality
