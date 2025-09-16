@@ -38,7 +38,7 @@ public class Blackjack {
      * contains at least 21 aces.
      * <p>
      * The status of this hand may be set to any from <code>HandStatus</code>.
-     * The turn when the status was updated must be recorded in
+     * The currentTurn when the status was updated must be recorded in
      * <code>turnStatusUpdated</code>, to ensure the program works as expected.
      * Thus, the use of <code>updateStatus()</code> is recommended.
      */
@@ -103,7 +103,7 @@ public class Blackjack {
          * any other statuses wouldn't have gotten any new cards since its
          * status was updated.
          *
-         * @param turn  the current turn in the game
+         * @param turn  the current currentTurn in the game
          */
         public void updateStatus(int turn) {
             // All statuses except for SPLIT mean that the hand takes no more cards
@@ -128,8 +128,8 @@ public class Blackjack {
                     // Whoops, busted
                     this.status = HandStatus.BUST;
                 } else if (!(this.turnStatusUpdated == turn && this.status == HandStatus.SPLIT)) {
-                    // The turn is over and the hand is below 21
-                    // And the status wasn't updated as a split this turn
+                    // The currentTurn is over and the hand is below 21
+                    // And the status wasn't updated as a split this currentTurn
                     this.status = null;
                 }
 
@@ -139,9 +139,9 @@ public class Blackjack {
 
         /**
          * Updates the status of this hand to the <code>newStatus</code>, then
-         * runs <code>updateStatus(int turn)</code>.
+         * runs <code>updateStatus(int currentTurn)</code>.
          *
-         * @param turn      the current turn in the game
+         * @param turn      the current currentTurn in the game
          * @param newStatus the status to set this hand to
          */
         public void updateStatus(int turn, HandStatus newStatus) {
@@ -233,7 +233,7 @@ public class Blackjack {
          * Sets the number of cards in each hand at the beginning of the game.
          * Note that the hands' statuses are not updated when the game starts,
          * so most hands with more than two cards may end up busting before the
-         * first turn.
+         * first currentTurn.
          * <p>
          * For example, setting <code>numCardsPerHand</code> to
          * <code>{2, 3, 4, 5}</code> lets the player start with 4 hands with 2,
@@ -315,7 +315,8 @@ public class Blackjack {
         private ArrayList<Hand> playerHands;
         private int currentPlayerHandIndex;
         private Hand dealerHand;
-        private int turn;
+        private int currentTurn;
+        private GameDebugger debugger;
 
         private enum Option {
             HIT("hit"),
@@ -337,9 +338,16 @@ public class Blackjack {
         }
 
         /**
-         * Initialises the game.
+         * Initialises this game.
+         *
+         * @param debugger  the <code>GameDebugger</code> for altering the
+         *                  behaviour of this game
          */
-        Game() {
+        Game(GameDebugger debugger) {
+            // Set the debugger for the game
+            this.debugger = debugger;
+
+            // Create a new, unshuffled, super-sparkly deck
             this.deck = new Cards.Deck();
             deck.shuffle(); // cue fancy shuffle techniques
 
@@ -354,7 +362,14 @@ public class Blackjack {
             this.dealerHand = new Hand();
 
             // Turns start at 0
-            this.turn = 0;
+            this.currentTurn = 0;
+        }
+
+        /**
+         * Initialises this game.
+         */
+        Game() {
+            this(new GameDebugger());
         }
 
         /**
@@ -376,37 +391,36 @@ public class Blackjack {
          * Makes use of the <code>GameDebugger</code> to alter the behaviour
          * of the game.
          *
-         * @param debugger  the GameDebugger to use
          * @return          a boolean that tells whether hands should be
          *                  initialized (have two cards added to them) after
          *                  this method is run
          */
-        private boolean debugHands(GameDebugger debugger) {
+        private boolean initializeWithDebugger() {
             boolean mayInitializeHand = true;
 
-            if (Arrays.asList(debugger.cheats).contains(Cheat.ALL_ACES)) {
+            if (Arrays.asList(this.debugger.cheats).contains(Cheat.ALL_ACES)) {
                 // Turn all cards into aces
                 for (int i = 0; i < this.deck.cards.length; i++) {
                     this.deck.cards[i].face = Cards.Face.ACE;
                 }
             }
 
-            for (int i = 0; i < debugger.deckCardFaces.length; i++) {
-                this.deck.cards[i].face = debugger.deckCardFaces[i];
+            for (int i = 0; i < this.debugger.deckCardFaces.length; i++) {
+                this.deck.cards[i].face = this.debugger.deckCardFaces[i];
             }
 
-            // Re-initiate hands
-            if (debugger.numCardsPerHand != null) {
+            // Re-initialise hands
+            if (this.debugger.numCardsPerHand != null) {
                 this.playerHands.clear();
                 Cards.Card[] cardsBuffer;
 
-                for (int i = 0; i < debugger.numCardsPerHand.length; i++) {
+                for (int i = 0; i < this.debugger.numCardsPerHand.length; i++) {
                     this.playerHands.add(new Hand());
-                    cardsBuffer = deck.drawCards(debugger.numCardsPerHand[i]);
+                    cardsBuffer = deck.drawCards(this.debugger.numCardsPerHand[i]);
                     this.playerHands.get(i).addCards(cardsBuffer);
 
-                    if (i < debugger.statusesForEachHand.length) {
-                        this.playerHands.get(i).status = debugger.statusesForEachHand[i];
+                    if (i < this.debugger.statusesForEachHand.length) {
+                        this.playerHands.get(i).status = this.debugger.statusesForEachHand[i];
                     }
                 }
 
@@ -551,8 +565,6 @@ public class Blackjack {
             return options.get(chosenOption - 1);
         }
 
-        // Play the chosen option
-
         /**
          * Plays the option chosen by the player (for example, drawing a card
          * from the deck and adding it to the player's hand if the player
@@ -578,12 +590,12 @@ public class Blackjack {
                     // Draw a new card
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
-                    playerHand.updateStatus(this.turn);
+                    playerHand.updateStatus(this.currentTurn);
                     break;
 
                 case Option.STAND:
                     // Stop drawing cards
-                    playerHand.updateStatus(this.turn, HandStatus.STAND);
+                    playerHand.updateStatus(this.currentTurn, HandStatus.STAND);
                     break;
 
                 case Option.DOUBLE_DOWN:
@@ -591,7 +603,7 @@ public class Blackjack {
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
                     // Stop drawing cards
-                    playerHand.updateStatus(this.turn, HandStatus.DOUBLE_DOWN);
+                    playerHand.updateStatus(this.currentTurn, HandStatus.DOUBLE_DOWN);
                     break;
 
                 case Option.SPLIT:
@@ -606,13 +618,13 @@ public class Blackjack {
                     playerHand.cards.add(cardsBuffer[0]);
                     newPlayerHand.cards.add(cardsBuffer[1]);
                     // Set the status
-                    playerHand.updateStatus(this.turn, HandStatus.SPLIT);
-                    newPlayerHand.updateStatus(this.turn, HandStatus.SPLIT);
+                    playerHand.updateStatus(this.currentTurn, HandStatus.SPLIT);
+                    newPlayerHand.updateStatus(this.currentTurn, HandStatus.SPLIT);
                     break;
 
                 case Option.SURRENDER:
                     // (Get half the bet back) and stop drawing cards
-                    playerHand.updateStatus(this.turn, HandStatus.SURRENDER);
+                    playerHand.updateStatus(this.currentTurn, HandStatus.SURRENDER);
                     break;
 
                 default:
@@ -621,19 +633,13 @@ public class Blackjack {
 
         }
 
-        // TODO: set debugger to be a class attribute, which defaults to
-        //       a default debugger
         // TODO: start() should just be added to Game() instead
-
-        // Play the game out
 
         /**
          * Starts this game.
-         *
-         * @param debugger
          */
-        public void start(GameDebugger debugger) {
-            boolean mayInitializeHand = this.debugHands(debugger);
+        public void start() {
+            boolean mayInitializeHand = this.initializeWithDebugger();
 
             if (mayInitializeHand) {
                 // Draw the initial two cards and add to hand
@@ -646,7 +652,7 @@ public class Blackjack {
             // The player may want to read the rules before playing.
             // The player may choose how many initial hands to have.
             // We must checkBlackjack() as soon as the game starts and after every playOption()
-            // Then move on to the next hand after playOption(), until the end of the turn.
+            // Then move on to the next hand after playOption(), until the end of the currentTurn.
             // This continues until all hands are done (any Option except Option.SPLIT).
             // At which point the dealer plays, and winners are decided.
 
@@ -658,12 +664,6 @@ public class Blackjack {
             // TODO: add actual game functionality
         }
 
-        // Non-debug version of start()
-        public void start() {
-            // Use the default GameDebugger
-            GameDebugger debugger = new GameDebugger();
-            start(debugger);
-        }
     }
 
 }
