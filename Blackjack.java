@@ -219,7 +219,6 @@ public class Blackjack {
         int[] numCardsPerHand;
         HandStatus[] statusesForEachHand;
         Cheat[] cheats;
-        int blackjackCardIndex;
         Cards.Face[] deckCardFaces;
 
         GameDebugger() {
@@ -227,7 +226,6 @@ public class Blackjack {
             this.numCardsPerHand = null;
             this.statusesForEachHand = new HandStatus[]{};
             this.cheats = new Cheat[]{};
-            this.blackjackCardIndex = -1;
             this.deckCardFaces = new Cards.Face[]{};
         }
 
@@ -253,23 +251,44 @@ public class Blackjack {
             return this;
         }
 
-        // TODO: keep updating docstrings
-
+        /**
+         * Sets the statuses of each hand at the beginning of the game.
+         * <p>
+         * The statuses are applied starting with the first hand onwards. The
+         * <code>statusesForEachHand</code> does not need to have the same
+         * length as <code>numCardsPerHand</code>.
+         *
+         * @param statusesForEachHand   the statuses applied to each hand
+         * @return                      this GameDebugger
+         */
         GameDebugger setStatusesForEachHand(HandStatus[] statusesForEachHand) {
             this.statusesForEachHand = statusesForEachHand;
             return this;
         }
 
+        /**
+         * Sets the cheats used for the game.
+         * <p>
+         * These cheats cause the game to not act like a standard game of
+         * Blackjack, and thus could make the game really annoying.
+         *
+         * @param cheats    cheats to be used for the game
+         * @return          this GameDebugger
+         */
         GameDebugger setCheats(Cheat[] cheats) {
             this.cheats = cheats;
             return this;
         }
 
-        GameDebugger setBlackjackCardIndex(int blackjackCardIndex) {
-            this.blackjackCardIndex = blackjackCardIndex;
-            return this;
-        }
-
+        /**
+         * Sets the faces of the cards at the top of the game's deck.
+         * <p>
+         * Useful for debugging very specific scenarios, such as a Blackjack
+         * or two aces on the initial hand.
+         *
+         * @param cardFaces faces of the cards to be used
+         * @return          this GameDebugger
+         */
         GameDebugger setDeckCardFaces(Cards.Face[] cardFaces) {
             this.deckCardFaces = cardFaces;
             return this;
@@ -279,6 +298,17 @@ public class Blackjack {
 
     // Gameplay for a single-player game against a dealer
     // After much consulting of the Wikipedia page
+
+    /**
+     * A single game of Blackjack.
+     * <p>
+     * Each game is made of several turns where the player makes a decision
+     * for each hand. The player may start with more than one hand. Up to seven
+     * hands may be played in a single game.
+     * <p>
+     * The behaviour of this game may be altered using
+     * <code>GameDebugger</code>.
+     */
     public static class Game {
 
         private Cards.Deck deck;
@@ -306,10 +336,14 @@ public class Blackjack {
             }
         }
 
-        // Constructor initialises the game
+        /**
+         * Initialises the game.
+         */
         Game() {
             this.deck = new Cards.Deck();
             deck.shuffle(); // cue fancy shuffle techniques
+
+            // TODO: allow the player to start with more than one hand
 
             // The player starts with a single hand
             this.playerHands = new ArrayList<>();
@@ -319,12 +353,20 @@ public class Blackjack {
             // Initialise the dealer's hand
             this.dealerHand = new Hand();
 
-            // Begin the first turn!
+            // Turns start at 0
             this.turn = 0;
         }
 
-        // Rigs the game for debug purposes
-        // Returns true if initial two cards may be added
+        /**
+         * Makes use of the <code>GameDebugger</code> to alter the behaviour
+         * of the game.
+         *
+         * @param debugger  the GameDebugger to use
+         * @return          a boolean that tells whether hands should be
+         *                  initiated (have two cards added to them) after this
+         *                  method is run
+         * @throws Cards.DeckEmptyException idk
+         */
         private boolean debugHands(GameDebugger debugger)
                 throws Cards.DeckEmptyException {
             boolean mayInitiateHand = true;
@@ -360,6 +402,12 @@ public class Blackjack {
             return mayInitiateHand;
         }
 
+        /**
+         * Shows the player's hands on the console.
+         * <p>
+         * The statuses and values of each hand are also shown, as well as which
+         * hand is currently being played.
+         */
         private void showPlayerHands() {
             // Get the longest Hand from playerHands
             int maxLength = Collections.max(
@@ -412,10 +460,27 @@ public class Blackjack {
             System.out.println();
         }
 
+        /**
+         * Shows the dealer's hand on the console.
+         */
         private void showDealerHand() {
-            this.dealerHand.show();
+            //this.dealerHand.show();
         }
 
+        // TODO: set playerHandIndex to this.currentPlayerHandIndex
+
+        /**
+         * Allows the player to make a decision (for example, to hit or stand)
+         * via console input.
+         * <p>
+         * This method also handles which options can be chosen based on the
+         * state of the game (for example, a player can only split if the two
+         * initial cards in the hand have the same value)
+         *
+         * @param playerHandIndex   the index of the hand whose options must
+         *                          be shown
+         * @return  the option chosen by the player
+         */
         private Option chooseOption(int playerHandIndex) {
             Hand playerHand = this.playerHands.get(playerHandIndex);
             ArrayList<Option> options = new ArrayList<>();
@@ -478,6 +543,19 @@ public class Blackjack {
         }
 
         // Play the chosen option
+
+        /**
+         * Plays the option chosen by the player (for example, drawing a card
+         * from the deck and adding it to the player's hand if the player
+         * chose to hit).
+         * <p>
+         * This method is responsible for updating the status of the played
+         * hand.
+         * @param playerHandIndex
+         * @param option    the option chosen by the player
+         * @throws Cards.DeckEmptyException     idk
+         * @throws Main.WhatTheHeckException    idk
+         */
         private void playOption(int playerHandIndex, Option option)
                 throws Cards.DeckEmptyException, Main.WhatTheHeckException {
             // HIT: draw a new card
@@ -489,6 +567,8 @@ public class Blackjack {
             Hand playerHand = this.playerHands.get(playerHandIndex);
 
             switch (option) {
+
+                // TODO: update status for all options
 
                 case Option.HIT:
                     // Draw a new card
@@ -536,7 +616,19 @@ public class Blackjack {
 
         }
 
+        // TODO: set debugger to be a class attribute, which defaults to
+        //       a default debugger
+        // TODO: start() should just be added to Game() instead
+
         // Play the game out
+
+        /**
+         * Starts this game.
+         *
+         * @param debugger
+         * @throws Cards.DeckEmptyException     idk
+         * @throws Main.WhatTheHeckException    idk
+         */
         public void start(GameDebugger debugger)
                 throws Cards.DeckEmptyException, Main.WhatTheHeckException {
             boolean mayInitiateHand = this.debugHands(debugger);

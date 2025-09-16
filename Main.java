@@ -15,6 +15,9 @@ public class Main {
     // TODO: adhere to
     // https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
 
+    // TODO: get rid of these annoying exceptions that will probably never
+    //       happen.
+
     /**
      * Initiates the game of Blackjack.
      * <p>
