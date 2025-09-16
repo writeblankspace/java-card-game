@@ -27,15 +27,15 @@ public class Main {
         // I have no idea how Blackjack works except that you want a 21
         // So here's the Wikipedia article: https://en.wikipedia.org/wiki/Blackjack
 
-        Blackjack.Game game = new Blackjack.Game();
-
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
                 .setCheats(new Blackjack.Cheat[]{Blackjack.Cheat.ALL_ACES})
                 .setDeckCardFaces(new Cards.Face[]{
                 })
                 .setNumCardsPerHand(new int[]{2, 2, 3, 3});
+        Blackjack.Game game = new Blackjack.Game(debugger);
 
-        game.start(debugger);
+
+        game.start();
     }
 }
