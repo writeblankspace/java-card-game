@@ -9,6 +9,8 @@ public class Main {
         }
     }
 
+    // TODO: ask the player if they want to read the rules
+
     /**
      * Initiates the game of Blackjack.
      * <p>
