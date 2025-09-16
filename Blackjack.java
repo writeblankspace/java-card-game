@@ -574,12 +574,11 @@ public class Blackjack {
 
             switch (option) {
 
-                // TODO: update status for all options
-
                 case Option.HIT:
                     // Draw a new card
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
+                    playerHand.updateStatus(this.turn);
                     break;
 
                 case Option.STAND:
@@ -654,7 +653,6 @@ public class Blackjack {
             this.showPlayerHands();
             Option option = this.chooseOption();
             this.playOption(option);
-            this.playerHands.get(0).updateStatus(0);
             this.showPlayerHands();
 
             // TODO: add actual game functionality
