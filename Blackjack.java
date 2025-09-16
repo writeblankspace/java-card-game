@@ -313,8 +313,8 @@ public class Blackjack {
 
         private Cards.Deck deck;
         private ArrayList<Hand> playerHands;
-        private int currentPlayerHandIndex;
         private Hand dealerHand;
+        private int currentPlayerHandIndex;
         private int currentTurn;
         private GameDebugger debugger;
 
@@ -338,7 +338,7 @@ public class Blackjack {
         }
 
         /**
-         * Initialises this game.
+         * Initialises variables for this game.
          *
          * @param debugger  the <code>GameDebugger</code> for altering the
          *                  behaviour of this game
@@ -351,12 +351,8 @@ public class Blackjack {
             this.deck = new Cards.Deck();
             deck.shuffle(); // cue fancy shuffle techniques
 
-            // TODO: allow the player to start with more than one hand
-
-            // The player starts with a single hand
+            // By default, the player starts with a single hand
             this.playerHands = new ArrayList<>();
-            this.playerHands.add(new Hand());
-            this.currentPlayerHandIndex = 0;
 
             // Initialise the dealer's hand
             this.dealerHand = new Hand();
@@ -366,25 +362,24 @@ public class Blackjack {
         }
 
         /**
-         * Initialises this game.
+         * Initialises variables for this game.
          */
         Game() {
             this(new GameDebugger());
         }
 
         /**
-         * Initialises a hand by drawing two cards and adding it to the hand.
+         * Creates a new hand and initialises it by drawing two cards.
          * <p>
          * To be used when a new hand is created and it does not come from a
          * split (for example, at the start of the game when the player is
          * asked for how many hands to play).
-         *
-         * @param playerHandIndex   the index of the player's hand to initialise
          */
-        private void initializeHand(int playerHandIndex) {
+        private void initializeNewHand() {
+            this.playerHands.add(new Hand());
             Cards.Card[] cardBuffer;
             cardBuffer = deck.drawCards(2);
-            this.playerHands.get(playerHandIndex).addCards(cardBuffer);
+            this.playerHands.getLast().addCards(cardBuffer);
         }
 
         /**
@@ -395,7 +390,7 @@ public class Blackjack {
          *                  initialized after this method is run
          */
         private boolean initializeWithDebugger() {
-            boolean mayInitializeHand = true;
+            boolean mayInitializeHands = true;
 
             if (Arrays.asList(this.debugger.cheats).contains(Cheat.ALL_ACES)) {
                 // Turn all cards into aces
@@ -423,9 +418,9 @@ public class Blackjack {
                     }
                 }
 
-                mayInitializeHand = false;
+                mayInitializeHands = false;
             }
-            return mayInitializeHand;
+            return mayInitializeHands;
         }
 
         /**
@@ -637,11 +632,33 @@ public class Blackjack {
          * Starts this game.
          */
         public void start() {
-            boolean mayInitializeHand = this.initializeWithDebugger();
+            boolean mayInitializeHands = this.initializeWithDebugger();
 
-            if (mayInitializeHand) {
-                // Draw the initial two cards and add to hand
-                this.initializeHand(0);
+            if (mayInitializeHands) {
+                // Ask the player for how many hands to start with
+                Scanner scanner = new Scanner(System.in);
+                int numHands = 1;
+
+                do {
+                    System.out.print("Enter the number of hands to start with (1 to 7): ");
+                    if (scanner.hasNextInt()) {
+                        numHands = scanner.nextInt();
+                        // Invalid input
+                        if (numHands < 1 || numHands > 7) {
+                            System.out.println("ERROR: Invalid number of hands. Please try again.\n");
+                        }
+                    } else {
+                        System.out.println("ERROR: Invalid number of hands. Please try again.\n");
+                        scanner.next();
+                    }
+                } while (numHands < 1 || numHands > 7);
+
+                // Initialise the hands
+                this.currentPlayerHandIndex = 0;
+
+                for (int i = 0; i < numHands; i++) {
+                    this.initializeNewHand();
+                }
             }
 
             // TODO: move on from this weird demo
