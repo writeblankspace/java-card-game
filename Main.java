@@ -12,9 +12,6 @@ public class Main {
         }
     }
 
-    // TODO: get rid of these annoying exceptions that will probably never
-    //       happen.
-
     /**
      * Initiates the game of Blackjack.
      * <p>
@@ -26,7 +23,6 @@ public class Main {
      * Multiple hands may be played at the same time.
      *
      * @param args  some arguments that get ignored anyway
-     * @throws WhatTheHeckException     idk
      */
     public static void main(String[] args) {
         // I have no idea how Blackjack works except that you want a 21
