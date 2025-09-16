@@ -45,11 +45,8 @@ public class Blackjack {
     public static class Hand {
 
         public ArrayList<Cards.Card> cards;
-        public HandStatus status;
-        public int turnStatusUpdated;
-
-        // TODO: make HandStatus and turnStatusUpdated private, and implement
-        //       getters and setters instead
+        private HandStatus status;
+        private int turnStatusUpdated;
 
         Hand() {
             this.cards = new ArrayList<>();
@@ -155,6 +152,13 @@ public class Blackjack {
             this.turnStatusUpdated = turn;
 
             this.updateStatus(turn);
+        }
+
+        /**
+         * @return  the current status of the hand
+         */
+        public HandStatus getStatus() {
+            return this.status;
         }
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
