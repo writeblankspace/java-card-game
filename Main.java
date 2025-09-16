@@ -1,6 +1,3 @@
-
-import java.util.*;
-
 public class Main {
     /**
      * Use as a general-purpose user-defined exception for when something
