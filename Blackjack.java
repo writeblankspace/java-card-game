@@ -54,9 +54,6 @@ public class Blackjack {
             this.turnStatusUpdated = -1;
         }
 
-        // TODO: initiate() method, for when the hand does not come from a split
-        //       or define Hand() but with an extra parameter
-
         public void addCards(Cards.Card[] newCards) {
             this.cards.addAll(Arrays.asList(newCards));
         }
@@ -163,7 +160,6 @@ public class Blackjack {
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
         //       unless there was actually a change in the cards' content
-        // Used for showing hands vertically
 
         /**
          * Returns a <code>String[]</code> used for printing the contents of this
@@ -362,16 +358,31 @@ public class Blackjack {
         }
 
         /**
+         * Initialises a hand by drawing two cards and adding it to the hand.
+         * <p>
+         * To be used when a new hand is created and it does not come from a
+         * split (for example, at the start of the game when the player is
+         * asked for how many hands to play).
+         *
+         * @param playerHandIndex   the index of the player's hand to initialise
+         */
+        private void initializeHand(int playerHandIndex) {
+            Cards.Card[] cardBuffer;
+            cardBuffer = deck.drawCards(2);
+            this.playerHands.get(playerHandIndex).addCards(cardBuffer);
+        }
+
+        /**
          * Makes use of the <code>GameDebugger</code> to alter the behaviour
          * of the game.
          *
          * @param debugger  the GameDebugger to use
          * @return          a boolean that tells whether hands should be
-         *                  initiated (have two cards added to them) after this
-         *                  method is run
+         *                  initialized (have two cards added to them) after
+         *                  this method is run
          */
         private boolean debugHands(GameDebugger debugger) {
-            boolean mayInitiateHand = true;
+            boolean mayInitializeHand = true;
 
             if (Arrays.asList(debugger.cheats).contains(Cheat.ALL_ACES)) {
                 // Turn all cards into aces
@@ -399,9 +410,9 @@ public class Blackjack {
                     }
                 }
 
-                mayInitiateHand = false;
+                mayInitializeHand = false;
             }
-            return mayInitiateHand;
+            return mayInitializeHand;
         }
 
         /**
@@ -479,8 +490,8 @@ public class Blackjack {
          * state of the game (for example, a player can only split if the two
          * initial cards in the hand have the same value)
          *
-         * @param playerHandIndex   the index of the hand whose options must
-         *                          be shown
+         * @param playerHandIndex   the index of the player's hand whose options
+         *                          must be shown
          * @return  the option chosen by the player
          */
         private Option chooseOption(int playerHandIndex) {
@@ -627,13 +638,11 @@ public class Blackjack {
          * @param debugger
          */
         public void start(GameDebugger debugger) {
-            boolean mayInitiateHand = this.debugHands(debugger);
+            boolean mayInitializeHand = this.debugHands(debugger);
 
-            if (mayInitiateHand) {
+            if (mayInitializeHand) {
                 // Draw the initial two cards and add to hand
-                Cards.Card[] cardBuffer;
-                cardBuffer = deck.drawCards(2);
-                this.playerHands.getFirst().addCards(cardBuffer);
+                this.initializeHand(0);
             }
 
             // TODO: move on from this weird demo
