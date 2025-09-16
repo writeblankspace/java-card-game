@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+
 public class Main {
     /**
      * Use as a general-purpose user-defined exception for when something
@@ -26,6 +32,33 @@ public class Main {
     public static void main(String[] args) {
         // I have no idea how Blackjack works except that you want a 21
         // So here's the Wikipedia article: https://en.wikipedia.org/wiki/Blackjack
+
+
+        // Ask player if they would like to read the rules
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.print("Would you like to read the rules before playing? (y/N): ");
+
+        // Ignore invalid output and move on
+        if (scanner.hasNextLine()) {
+            input = scanner.nextLine();
+            if (input.equalsIgnoreCase("y")) {
+                // Show rules
+                System.out.println();
+                try (BufferedReader br = new BufferedReader(new FileReader("rules.txt"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("\nNow that you know the rules, let's start the game!");
+            }
+        }
+        System.out.println();
+
+
 
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()

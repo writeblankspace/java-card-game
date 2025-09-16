@@ -1,90 +1,93 @@
-(These rules are based on the rules as detailed by the Wikipedia page:
- https://en.wikipedia.org/wiki/Blackjack)
+────────────────────────────────────────────────────────────────────────────────
 
                                 BLACKJACK
 
-The main goal of Blackjack is to get a hand's value as close to 21 as possible
-without going over ("busting"). Each hand starts with two cards. If the values
-of these two initial cards add up to 21, that is called a "blackjack" and is the
-most valuable hand.
+ABOUT
 
-This program allows a single player to play this game with one to seven hands.
-Hands are played independently. On each turn, the player can decide on what to
-do with each hand (detailed below under "PLAYER OPTIONS").
+    The main goal of Blackjack is to get a hand's value as close to 21 as
+    possible without going over ("busting"). Each hand starts with two cards. If
+    the values of these two initial cards add up to 21, that is called a
+    "blackjack" and is the most valuable hand.
 
-The game stops once all hands can no longer take any more cards (either by
-achieving a total of 21, busting, or by player decision), the dealer resolves
-its hand and the winners are determined.
+    This program allows a single player to play this game with one to seven
+    hands. Hands are played independently. On each turn, the player can decide
+    on what to do with each hand (detailed below under "PLAYER OPTIONS").
+
+    The game stops once all hands can no longer take any more cards (either by
+    achieving a total of 21, busting, or by player decision), the dealer
+    resolves its hand and the winners are determined.
 
 
 CARD VALUES
 
-Number cards are valued at their number (e.g. 2 of Spades has a value of 2).
-Face cards are valued at 10 (e.g. Jack of Diamonds has a value of 10).
+    Number cards are valued at their number (e.g. 2 of Spades has a value of 2).
+    Face cards are valued at 10 (e.g. Jack of Diamonds has a value of 10).
 
-Aces are valued at 11 by default, unless this would result in a bust. In that
-case, the ace is valued at 1.
+    Aces are valued at 11 by default, unless this would result in a bust. In
+    that case, the ace is valued at 1.
 
-Here are sample hands and their values:
+    Here are sample hands and their values:
 
-╭────╮ ╭────╮ ╭────╮ ╭────╮
-│♠  5│ │♥  A│ │♣  7│ │♦  J│
-╭────╮ ╭────╮ ╭────╮ ╭────╮
-│♥  3│ │♠  9│ │♣  6│ │♦  3│
-│    │ │    │ ╭────╮ ╭────╮
-╰────╯ ╰────╯ │♠  A│ │♦  5│
-    8     20  │    │ │    │
-              ╰────╯ ╰────╯
-                 14     18
+    ╭────╮ ╭────╮ ╭────╮ ╭────╮
+    │♠  5│ │♥  A│ │♣  7│ │♦  J│
+    ╭────╮ ╭────╮ ╭────╮ ╭────╮
+    │♥  3│ │♠  9│ │♣  6│ │♦  3│
+    │    │ │    │ ╭────╮ ╭────╮
+    ╰────╯ ╰────╯ │♠  A│ │♦  5│
+        8     20  │    │ │    │
+                  ╰────╯ ╰────╯
+                     14     18
 
 
 PLAYER OPTIONS
 
-On the initial two cards, the player has up to five options: hit, stand, double
-down, split and surrender.
+    On the initial two cards, the player has up to five options: hit, stand,
+    double down, split and surrender.
 
-Once a hand has more than two cards, only two options are available: hit and
-stand.
+    Once a hand has more than two cards, only two options are available: hit and
+    stand.
 
-    - HIT: draw a card
+        - HIT: draw a card
 
-    - STAND: stop drawing cards
+        - STAND: stop drawing cards
 
-    - DOUBLE DOWN: double the bet and draw a card. No more cards can be drawn
-        for this hand.
+        - DOUBLE DOWN: double the bet and draw a card. No more cards can be
+            drawn for this hand.
 
-    - SPLIT: if the two initial cards have the same value, split the hand into
-        two. A card is drawn for each hand, resulting in two starting hands.
-        The second hand requires an additional bet. The two hands are played out
-        independently.
+        - SPLIT: if the two initial cards have the same value, split the hand
+            into two. A card is drawn for each hand, resulting in two starting
+            hands. The second hand requires an additional bet. The two hands are
+            played out independently.
 
-    - SURRENDER: forfeit half the bet and stop drawing cards
+        - SURRENDER: forfeit half the bet and stop drawing cards
 
 
 SPECIAL RULES FOR SPLITTING
 
-A 10-valued card and an ace resulting from a split isn't considered a blackjack.
+    A 10-valued card and an ace resulting from a split isn't considered a
+    blackjack.
 
-    - HIT: you can't hit split aces
+        - HIT: you can't hit split aces
 
-    - SURRENDER: you can't surrender after splitting
+        - SURRENDER: you can't surrender after splitting
 
 
 AFTER THE PLAYERS HAVE FINISHED
 
-After the players have finished playing, the dealer's hand is resolved.
+    After the players have finished playing, the dealer's hand is resolved.
 
-The dealer draws cards until the hand achieves a total of 17 or higher. If the
-dealer has a total of 17 including an ace valued as 11 (a "soft 17"), the dealer
-continues drawing cards.
+    The dealer draws cards until the hand achieves a total of 17 or higher. If
+    the dealer has a total of 17 including an ace valued as 11 (a "soft 17"),
+    the dealer draws one more card.
 
-    - If the dealer busts, all players who haven't busted win.
+        - If the dealer busts, all players who haven't busted win.
 
-    - If the dealer does not bust, each remaining bet wins if its hand is higher
-        than the dealer's hand, as loses otherwise.
+        - If the dealer does not bust, each remaining bet wins if its hand is
+            higher than the dealer's hand, as loses otherwise.
 
-    - In the case of a tie ("push"), bets are returned without adjustment.
+        - In the case of a tie ("push"), bets are returned without adjustment.
 
-    - A blackjack beats any hand that is not a blackjack (even a hand with a
-        value of 21).
+        - A blackjack beats any hand that is not a blackjack (even a hand with a
+            value of 21).
 
+────────────────────────────────────────────────────────────────────────────────

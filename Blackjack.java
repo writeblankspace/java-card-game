@@ -626,8 +626,6 @@ public class Blackjack {
 
         }
 
-        // TODO: start() should just be added to Game() instead
-
         /**
          * Starts this game.
          */
@@ -661,7 +659,6 @@ public class Blackjack {
                 }
             }
 
-            // TODO: move on from this weird demo
             // Currently, this demo plays a single move and shows the result.
 
             // The player may want to read the rules before playing.
