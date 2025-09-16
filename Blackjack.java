@@ -480,8 +480,6 @@ public class Blackjack {
             //this.dealerHand.show();
         }
 
-        // TODO: set playerHandIndex to this.currentPlayerHandIndex
-
         /**
          * Allows the player to make a decision (for example, to hit or stand)
          * via console input.
@@ -490,12 +488,10 @@ public class Blackjack {
          * state of the game (for example, a player can only split if the two
          * initial cards in the hand have the same value)
          *
-         * @param playerHandIndex   the index of the player's hand whose options
-         *                          must be shown
          * @return  the option chosen by the player
          */
-        private Option chooseOption(int playerHandIndex) {
-            Hand playerHand = this.playerHands.get(playerHandIndex);
+        private Option chooseOption() {
+            Hand playerHand = this.playerHands.get(this.currentPlayerHandIndex);
             ArrayList<Option> options = new ArrayList<>();
 
             // Hitting split aces is not allowed
@@ -564,17 +560,17 @@ public class Blackjack {
          * <p>
          * This method is responsible for updating the status of the played
          * hand.
-         * @param playerHandIndex
+         *
          * @param option    the option chosen by the player
          */
-        private void playOption(int playerHandIndex, Option option) {
+        private void playOption(Option option) {
             // HIT: draw a new card
             // STAND: stop drawing cards
             // DOUBLE_DOWN: double the bet and draw a card; stop drawing cards
             // SPLIT: split the two cards into two hands; draw a card for each hand
             // SURRENDER: get half the bet back and stop drawing cards
             Cards.Card[] cardsBuffer;
-            Hand playerHand = this.playerHands.get(playerHandIndex);
+            Hand playerHand = this.playerHands.get(this.currentPlayerHandIndex);
 
             switch (option) {
 
@@ -656,8 +652,8 @@ public class Blackjack {
             // At which point the dealer plays, and winners are decided.
 
             this.showPlayerHands();
-            Option option = this.chooseOption(0);
-            this.playOption(0, option);
+            Option option = this.chooseOption();
+            this.playOption(option);
             this.playerHands.get(0).updateStatus(0);
             this.showPlayerHands();
 
