@@ -392,8 +392,7 @@ public class Blackjack {
          * of the game.
          *
          * @return          a boolean that tells whether hands should be
-         *                  initialized (have two cards added to them) after
-         *                  this method is run
+         *                  initialized after this method is run
          */
         private boolean initializeWithDebugger() {
             boolean mayInitializeHand = true;
@@ -576,20 +575,18 @@ public class Blackjack {
          * @param option    the option chosen by the player
          */
         private void playOption(Option option) {
-            // HIT: draw a new card
-            // STAND: stop drawing cards
-            // DOUBLE_DOWN: double the bet and draw a card; stop drawing cards
-            // SPLIT: split the two cards into two hands; draw a card for each hand
-            // SURRENDER: get half the bet back and stop drawing cards
+            // See "PLAYER OPTIONS" in rules.txt for how this works
+
             Cards.Card[] cardsBuffer;
             Hand playerHand = this.playerHands.get(this.currentPlayerHandIndex);
 
             switch (option) {
 
                 case Option.HIT:
-                    // Draw a new card
+                    // Draw a card
                     cardsBuffer = deck.drawCards(1);
                     playerHand.addCards(cardsBuffer);
+                    // Update this hand's status
                     playerHand.updateStatus(this.currentTurn);
                     break;
 
@@ -628,6 +625,7 @@ public class Blackjack {
                     break;
 
                 default:
+                    // This is an unexpected result
                     throw new Main.WhatTheHeckException("Option does not match any Option????");
             }
 
