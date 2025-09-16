@@ -3,12 +3,18 @@
 
                                 BLACKJACK
 
-MAIN GOAL
-
-The main goal of the game is to get a hand's value as close to 21 as possible
+The main goal of Blackjack is to get a hand's value as close to 21 as possible
 without going over ("busting"). Each hand starts with two cards. If the values
 of these two initial cards add up to 21, that is called a "blackjack" and is the
 most valuable hand.
+
+This program allows a single player to play this game with one to seven hands.
+Hands are played independently. On each turn, the player can decide on what to
+do with each hand (detailed below under "PLAYER OPTIONS").
+
+The game stops once all hands can no longer take any more cards (either by
+achieving a total of 21, busting, or by player decision), the dealer resolves
+its hand and the winners are determined.
 
 
 CARD VALUES
@@ -40,18 +46,19 @@ down, split and surrender.
 Once a hand has more than two cards, only two options are available: hit and
 stand.
 
-    - HIT: take another card
+    - HIT: draw a card
 
-    - STAND: take no more cards
+    - STAND: stop drawing cards
 
-    - DOUBLE DOWN: double the bet and take exactly one more card
+    - DOUBLE DOWN: double the bet and draw a card. No more cards can be drawn
+        for this hand.
 
     - SPLIT: if the two initial cards have the same value, split the hand into
-        two. Each new hand gets a second card, resulting in two starting hands.
+        two. A card is drawn for each hand, resulting in two starting hands.
         The second hand requires an additional bet. The two hands are played out
         independently.
 
-    - SURRENDER: forfeit half the bet and end the hand immediately
+    - SURRENDER: forfeit half the bet and stop drawing cards
 
 
 SPECIAL RULES FOR SPLITTING
