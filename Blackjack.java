@@ -365,10 +365,8 @@ public class Blackjack {
          * @return          a boolean that tells whether hands should be
          *                  initiated (have two cards added to them) after this
          *                  method is run
-         * @throws Cards.DeckEmptyException idk
          */
-        private boolean debugHands(GameDebugger debugger)
-                throws Cards.DeckEmptyException {
+        private boolean debugHands(GameDebugger debugger) {
             boolean mayInitiateHand = true;
 
             if (Arrays.asList(debugger.cheats).contains(Cheat.ALL_ACES)) {
@@ -553,11 +551,8 @@ public class Blackjack {
          * hand.
          * @param playerHandIndex
          * @param option    the option chosen by the player
-         * @throws Cards.DeckEmptyException     idk
-         * @throws Main.WhatTheHeckException    idk
          */
-        private void playOption(int playerHandIndex, Option option)
-                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        private void playOption(int playerHandIndex, Option option) {
             // HIT: draw a new card
             // STAND: stop drawing cards
             // DOUBLE_DOWN: double the bet and draw a card; stop drawing cards
@@ -626,11 +621,8 @@ public class Blackjack {
          * Starts this game.
          *
          * @param debugger
-         * @throws Cards.DeckEmptyException     idk
-         * @throws Main.WhatTheHeckException    idk
          */
-        public void start(GameDebugger debugger)
-                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        public void start(GameDebugger debugger) {
             boolean mayInitiateHand = this.debugHands(debugger);
 
             if (mayInitiateHand) {
@@ -660,8 +652,7 @@ public class Blackjack {
         }
 
         // Non-debug version of start()
-        public void start()
-                throws Cards.DeckEmptyException, Main.WhatTheHeckException {
+        public void start() {
             // Use the default GameDebugger
             GameDebugger debugger = new GameDebugger();
             start(debugger);

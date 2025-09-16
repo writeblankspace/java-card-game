@@ -6,14 +6,11 @@ public class Main {
      * Use as a general-purpose user-defined exception for when something
      * should not be expected but somehow happens anyway.
      */
-    public static class WhatTheHeckException extends Exception {
+    public static class WhatTheHeckException extends RuntimeException {
         public WhatTheHeckException(String message) {
             super(message);
         }
     }
-
-    // TODO: adhere to
-    // https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
 
     // TODO: get rid of these annoying exceptions that will probably never
     //       happen.
@@ -29,11 +26,9 @@ public class Main {
      * Multiple hands may be played at the same time.
      *
      * @param args  some arguments that get ignored anyway
-     * @throws Cards.DeckEmptyException idk
      * @throws WhatTheHeckException     idk
      */
-    public static void main(String[] args)
-            throws Cards.DeckEmptyException, WhatTheHeckException {
+    public static void main(String[] args) {
         // I have no idea how Blackjack works except that you want a 21
         // So here's the Wikipedia article: https://en.wikipedia.org/wiki/Blackjack
 

@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Cards {
-    public static class DeckEmptyException extends Exception {
+    public static class DeckEmptyException extends RuntimeException {
         public DeckEmptyException(String message) {
             super(message);
         }
