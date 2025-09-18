@@ -106,10 +106,6 @@ public class Cards {
         }
     }
 
-    // TODO: Cards.Deck and Blackjack.Hand share some things in common
-    //       Use an abstract (or something) and make both classes extend it
-
-
     /**
      * A standard deck of 52 cards, by default.
      * <p>
