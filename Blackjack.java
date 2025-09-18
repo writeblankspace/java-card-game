@@ -354,9 +354,6 @@ public class Blackjack {
 
             // Initialise the dealer's hand
             this.dealerHand = new Hand();
-
-            // Turns start at 0
-            this.currentTurn = 0;
         }
 
         /**
@@ -657,6 +654,39 @@ public class Blackjack {
                 }
             }
 
+            // TODO: add actual game functionality
+
+            // Check for any Blackjacks
+            for (Hand hand : this.playerHands) {
+                hand.updateStatus(0);
+            }
+
+            boolean isGameOver = false;
+
+            // Each run of the loop is a single turn
+            this.currentTurn = 0;
+            this.currentPlayerHandIndex = 0;
+            Hand hand;
+
+            do {
+                for (int i = 0; i < this.playerHands.size(); i++) {
+                    hand = this.playerHands.get(i);
+                    this.currentPlayerHandIndex = i;
+
+                    // Skip hand if the status isn't null nor HandStatus.SPLIT
+                    if (hand.status != null && hand.status != HandStatus.SPLIT) {
+                        continue;
+                    }
+
+                    this.showPlayerHands();
+                    Option option = this.chooseOption();
+                    this.playOption(option);
+                    this.showPlayerHands();
+                }
+                this.currentTurn += 1;
+                isGameOver = true; // TODO: get rid of this... eventually
+            } while (!isGameOver);
+
             // Currently, this demo plays a single move and shows the result.
 
             // The player may want to read the rules before playing.
@@ -670,8 +700,6 @@ public class Blackjack {
             Option option = this.chooseOption();
             this.playOption(option);
             this.showPlayerHands();
-
-            // TODO: add actual game functionality
         }
 
     }

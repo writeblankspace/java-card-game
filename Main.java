@@ -60,7 +60,7 @@ public class Main {
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
                 //.setCheats(new Blackjack.Cheat[]{Blackjack.Cheat.ALL_ACES})
                 //.setDeckCardFaces(new Cards.Face[]{})
-                .setNumCardsPerHand(new int[]{2, 2, 3, 3})
+                //.setNumCardsPerHand(new int[]{2, 2, 3, 3})
                 ;
 
         Blackjack.Game game = new Blackjack.Game(debugger);
