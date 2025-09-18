@@ -92,8 +92,6 @@ public class Blackjack {
             return res;
         }
 
-        // Checks if the hand is a 21 or a bust and updates the hand's status accordingly
-
         /**
          * Updates the status of this hand, especially when the hand is valued
          * at 21 or higher.

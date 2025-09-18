@@ -15,7 +15,7 @@ public class Main {
         }
     }
 
-    // TODO: ask the player if they want to read the rules
+    // TODO: set attributes and methods to private unless otherwise necessary
 
     /**
      * Initiates the game of Blackjack.
@@ -57,8 +57,6 @@ public class Main {
             }
         }
         System.out.println();
-
-
 
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
