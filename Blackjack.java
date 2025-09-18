@@ -9,7 +9,7 @@ public class Blackjack {
      * Their <code>.toString()</code> values are used for printing 'hands'
      * to the console, and use exactly 6 characters for alignment.
      */
-    public enum HandStatus {
+    private enum HandStatus {
         STAND("[STND]"),
         DOUBLE_DOWN("[DBLD]"),
         SURRENDER("[SURR]"),
@@ -42,7 +42,7 @@ public class Blackjack {
      * <code>turnStatusUpdated</code>, to ensure the program works as expected.
      * Thus, the use of <code>updateStatus()</code> is recommended.
      */
-    public static class Hand {
+    private static class Hand {
 
         public ArrayList<Cards.Card> cards;
         private HandStatus status;

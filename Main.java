@@ -15,8 +15,6 @@ public class Main {
         }
     }
 
-    // TODO: set attributes and methods to private unless otherwise necessary
-
     /**
      * Initiates the game of Blackjack.
      * <p>
