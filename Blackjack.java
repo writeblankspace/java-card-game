@@ -102,11 +102,12 @@ public class Blackjack {
          * status was updated.
          *
          * @param turn  the current currentTurn in the game
+         * @return      the new status of this hand
          */
-        public void updateStatus(int turn) {
+        public HandStatus updateStatus(int turn) {
             // All statuses except for SPLIT mean that the hand takes no more cards
             // So leave the status be if it is null or SPLIT
-            if (this.status == null || this.status == HandStatus.SPLIT) {
+            if (this.canBePlayed()) {
                 int handValue = this.getValue();
 
                 if (handValue == 21) {
@@ -125,7 +126,7 @@ public class Blackjack {
                 } else if (handValue > 21) {
                     // Whoops, busted
                     this.status = HandStatus.BUST;
-                } else if (!(this.turnStatusUpdated == turn && this.status == HandStatus.SPLIT)) {
+                } else if (this.turnStatusUpdated != turn && this.status == HandStatus.SPLIT) {
                     // The currentTurn is over and the hand is below 21
                     // And the status wasn't updated as a split this currentTurn
                     this.status = null;
@@ -133,6 +134,7 @@ public class Blackjack {
 
                 this.turnStatusUpdated = turn;
             }
+            return this.status;
         }
 
         /**
@@ -141,12 +143,13 @@ public class Blackjack {
          *
          * @param turn      the current currentTurn in the game
          * @param newStatus the status to set this hand to
+         * @return          the new status of this hand
          */
-        public void updateStatus(int turn, HandStatus newStatus) {
+        public HandStatus updateStatus(int turn, HandStatus newStatus) {
             this.status = newStatus;
             this.turnStatusUpdated = turn;
 
-            this.updateStatus(turn);
+            return this.updateStatus(turn);
         }
 
         /**
@@ -154,6 +157,13 @@ public class Blackjack {
          */
         public HandStatus getStatus() {
             return this.status;
+        }
+
+        /**
+         * @return  whether the hand can be played
+         */
+        public boolean canBePlayed() {
+            return (this.status == null || this.status == HandStatus.SPLIT);
         }
 
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
@@ -563,8 +573,9 @@ public class Blackjack {
          * hand.
          *
          * @param option    the option chosen by the player
+         * @return          the new status of the hand played
          */
-        private void playOption(Option option) {
+        private HandStatus playOption(Option option) {
             // See "PLAYER OPTIONS" in rules.txt for how this works
 
             Cards.Card[] cardsBuffer;
@@ -619,6 +630,7 @@ public class Blackjack {
                     throw new Main.WhatTheHeckException("Option does not match any Option????");
             }
 
+            return playerHand.status;
         }
 
         /**
@@ -667,25 +679,35 @@ public class Blackjack {
             this.currentTurn = 0;
             this.currentPlayerHandIndex = 0;
             Hand hand;
+            boolean canContinueGame;
 
             do {
+                canContinueGame = false;
+
                 for (int i = 0; i < this.playerHands.size(); i++) {
                     hand = this.playerHands.get(i);
                     this.currentPlayerHandIndex = i;
 
-                    // Skip hand if the status isn't null nor HandStatus.SPLIT
-                    if (hand.status != null && hand.status != HandStatus.SPLIT) {
+                    // Skip hand if it can't be played
+                    if (!hand.canBePlayed()) {
                         continue;
-                    }
+                    } else {
+                        this.showPlayerHands();
+                        Option option = this.chooseOption();
+                        this.playOption(option);
 
-                    this.showPlayerHands();
-                    Option option = this.chooseOption();
-                    this.playOption(option);
-                    this.showPlayerHands();
+                        System.out.println();
+
+                        if (hand.canBePlayed()) {
+                            // This hand is still playable
+                            canContinueGame = true;
+                        }
+                    }
                 }
+
                 this.currentTurn += 1;
-                isGameOver = true; // TODO: get rid of this... eventually
-            } while (!isGameOver);
+
+            } while (canContinueGame);
 
             // Currently, this demo plays a single move and shows the result.
 
@@ -696,10 +718,7 @@ public class Blackjack {
             // This continues until all hands are done (any Option except Option.SPLIT).
             // At which point the dealer plays, and winners are decided.
 
-            this.showPlayerHands();
-            Option option = this.chooseOption();
-            this.playOption(option);
-            this.showPlayerHands();
+            System.out.println("Game over");
         }
 
     }
