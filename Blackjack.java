@@ -1,8 +1,6 @@
 import java.util.*;
 
 public class Blackjack {
-    // Used for special statuses for the hand
-
     /**
      * The different statuses that a hand in Blackjack may take.
      * <p>
@@ -296,9 +294,6 @@ public class Blackjack {
         }
 
     }
-
-    // Gameplay for a single-player game against a dealer
-    // After much consulting of the Wikipedia page
 
     /**
      * A single game of Blackjack.
@@ -661,9 +656,7 @@ public class Blackjack {
                 }
             }
 
-            // TODO: add actual game functionality
-
-            // Check for any Blackjacks
+            // Check for any Blackjacks at the beginning of the game
             for (Hand hand : this.playerHands) {
                 hand.updateStatus(0);
             }
@@ -700,14 +693,7 @@ public class Blackjack {
 
             } while (canContinueGame);
 
-            // Currently, this demo plays a single move and shows the result.
-
-            // The player may want to read the rules before playing.
-            // The player may choose how many initial hands to have.
-            // We must checkBlackjack() as soon as the game starts and after every playOption()
-            // Then move on to the next hand after playOption(), until the end of the currentTurn.
-            // This continues until all hands are done (any Option except Option.SPLIT).
-            // At which point the dealer plays, and winners are decided.
+            // TODO: show results of each hand and let the dealer play
 
             System.out.println("Game over");
         }
