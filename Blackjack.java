@@ -153,13 +153,6 @@ public class Blackjack {
         }
 
         /**
-         * @return  the current status of the hand
-         */
-        public HandStatus getStatus() {
-            return this.status;
-        }
-
-        /**
          * @return  whether the hand can be played
          */
         public boolean canBePlayed() {
@@ -324,7 +317,7 @@ public class Blackjack {
         private Hand dealerHand;
         private int currentPlayerHandIndex;
         private int currentTurn;
-        private GameDebugger debugger;
+        private final GameDebugger debugger;
 
         private enum Option {
             HIT("hit"),
@@ -368,6 +361,8 @@ public class Blackjack {
 
         /**
          * Initialises variables for this game.
+         * <p>
+         * Uses a default <code>GameDebugger</code>.
          */
         Game() {
             this(new GameDebugger());
@@ -673,8 +668,6 @@ public class Blackjack {
                 hand.updateStatus(0);
             }
 
-            boolean isGameOver = false;
-
             // Each run of the loop is a single turn
             this.currentTurn = 0;
             this.currentPlayerHandIndex = 0;
@@ -689,9 +682,7 @@ public class Blackjack {
                     this.currentPlayerHandIndex = i;
 
                     // Skip hand if it can't be played
-                    if (!hand.canBePlayed()) {
-                        continue;
-                    } else {
+                    if (hand.canBePlayed()) {
                         this.showPlayerHands();
                         Option option = this.chooseOption();
                         this.playOption(option);
