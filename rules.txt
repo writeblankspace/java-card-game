@@ -78,7 +78,7 @@ AFTER THE PLAYERS HAVE FINISHED
 
     The dealer draws cards until the hand achieves a total of 17 or higher. If
     the dealer has a total of 17 including an ace valued as 11 (a "soft 17"),
-    the dealer draws one more card.
+    the dealer stops drawing cards.
 
         - If the dealer busts, all players who haven't busted win.
 

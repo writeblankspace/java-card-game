@@ -418,6 +418,10 @@ public class Blackjack {
             return mayInitializeHands;
         }
 
+        // TODO: dealer's hand must be shown to the right of player hands
+        //       and showPlayerHands() and showDealerHand() must become
+        //       showHands()
+
         /**
          * Shows the player's hands on the console.
          * <p>
@@ -480,7 +484,12 @@ public class Blackjack {
          * Shows the dealer's hand on the console.
          */
         private void showDealerHand() {
-            //this.dealerHand.show();
+            for (String string : this.dealerHand.toStrings()) {
+                if (string != null) {
+                    System.out.println(string);
+                }
+            }
+            System.out.println();
         }
 
         /**
@@ -704,6 +713,15 @@ public class Blackjack {
             // TODO: show results of each hand and let the dealer play
 
             System.out.println("Resolving dealer's hand...");
+
+            Cards.Card[] cardsBuffer;
+            while (dealerHand.getValue() < 17) {
+                cardsBuffer = this.deck.drawCards(1);
+                dealerHand.addCards(cardsBuffer);
+            }
+
+            System.out.println("\n DLER ");
+            this.showDealerHand();
 
             System.out.println("Game over");
         }
