@@ -445,7 +445,7 @@ public class Blackjack {
                 if (i == this.currentPlayerHandIndex) {
                     sbs[0].append(" ").append("PLAY").append("  ");
                 } else {
-                    sbs[0].append(" ").append(i + 1).append("     ");
+                    sbs[0].append("       ");
                 }
             }
 
@@ -543,10 +543,12 @@ public class Blackjack {
                     chosenOption = scanner.nextInt();
                     // Invalid input
                     if (chosenOption < 1 || chosenOption > options.size()) {
-                        System.out.println("ERROR: Invalid option. Please try again.\n");
+                        System.out.println("> ERROR: Invalid option. Please " +
+                                "try again.\n");
                     }
                 } else {
-                    System.out.println("ERROR: Invalid option. Please try again.\n");
+                    System.out.println("> ERROR: Invalid option. Please try " +
+                            "again.\n");
                     scanner.next();
                 }
             }
@@ -629,6 +631,8 @@ public class Blackjack {
         public void start() {
             boolean mayInitializeHands = this.initializeWithDebugger();
 
+            System.out.println("Shuffling...");
+
             if (mayInitializeHands) {
                 // Ask the player for how many hands to start with
                 Scanner scanner = new Scanner(System.in);
@@ -640,10 +644,12 @@ public class Blackjack {
                         numHands = scanner.nextInt();
                         // Invalid input
                         if (numHands < 1 || numHands > 7) {
-                            System.out.println("ERROR: Invalid number of hands. Please try again.\n");
+                            System.out.println("> ERROR: Invalid number of " +
+                                    "hands. Please try again.\n");
                         }
                     } else {
-                        System.out.println("ERROR: Invalid number of hands. Please try again.\n");
+                        System.out.println("> ERROR: Invalid number of hands." +
+                                " Please try again.\n");
                         scanner.next();
                     }
                 } while (numHands < 1 || numHands > 7);
@@ -655,6 +661,8 @@ public class Blackjack {
                     this.initializeNewHand();
                 }
             }
+
+            System.out.println();
 
             // Check for any Blackjacks at the beginning of the game
             for (Hand hand : this.playerHands) {
@@ -694,6 +702,8 @@ public class Blackjack {
             } while (canContinueGame);
 
             // TODO: show results of each hand and let the dealer play
+
+            System.out.println("Resolving dealer's hand...");
 
             System.out.println("Game over");
         }
