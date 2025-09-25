@@ -12,14 +12,20 @@ public class Cards {
      */
     public static class Card {
 
-        Face face;
-        Suit suit;
+        private Face face;
+        private Suit suit;
 
         // Constructor!
         Card(Face face, Suit suit) {
             this.face = face;
             this.suit = suit;
         }
+
+        public void setFace(Face face) { this.face = face; }
+        public void setSuit(Suit suit) { this.suit = suit; }
+
+        public Face getFace() { return this.face; }
+        public Suit getSuit() { return this.suit; }
 
         /**
          * Just like your average <code>.toString()</code> method.

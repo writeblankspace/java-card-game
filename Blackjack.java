@@ -70,10 +70,10 @@ public class Blackjack {
 
             // Set res to the sum of the values of all cards except aces
             for (Cards.Card card : this.cards) {
-                if (card.face == Cards.Face.ACE) {
+                if (card.getFace() == Cards.Face.ACE) {
                     numAces++;
                 } else {
-                    res += card.face.value;
+                    res += card.getFace().value;
                 }
             }
 
@@ -112,7 +112,7 @@ public class Blackjack {
                     // It could be a Blackjack!
                     if (this.cards.size() == 2) {
                         // A 10-valued card and an ace from a split isn't considered a blackjack
-                        if (this.cards.stream().anyMatch(x -> x.face == Cards.Face.ACE)
+                        if (this.cards.stream().anyMatch(x -> x.getFace() == Cards.Face.ACE)
                                 && this.status == HandStatus.SPLIT) {
                             this.status = HandStatus.TWENTY_ONE;
                         } else {
@@ -392,12 +392,12 @@ public class Blackjack {
             if (Arrays.asList(this.debugger.cheats).contains(Cheat.ALL_ACES)) {
                 // Turn all cards into aces
                 for (int i = 0; i < this.deck.cards.length; i++) {
-                    this.deck.cards[i].face = Cards.Face.ACE;
+                    this.deck.cards[i].setFace(Cards.Face.ACE);
                 }
             }
 
             for (int i = 0; i < this.debugger.deckCardFaces.length; i++) {
-                this.deck.cards[i].face = this.debugger.deckCardFaces[i];
+                this.deck.cards[i].setFace(this.debugger.deckCardFaces[i]);
             }
 
             // Re-initialise hands
@@ -509,7 +509,7 @@ public class Blackjack {
             ArrayList<Option> options = new ArrayList<>();
 
             // Hitting split aces is not allowed
-            if (!(playerHand.cards.get(0).face == Cards.Face.ACE
+            if (!(playerHand.cards.get(0).getFace() == Cards.Face.ACE
                     && playerHand.status == HandStatus.SPLIT)) {
                 options.add(Option.HIT);
             }
@@ -524,7 +524,8 @@ public class Blackjack {
                 // If the player can split
                 // i.e. both starting cards have the same value
                 //      and there are less than 7 hands in play
-                if (playerHand.cards.get(0).face.value == playerHand.cards.get(1).face.value
+                if (playerHand.cards.get(0).getFace().value
+                        == playerHand.cards.get(1).getFace().value
                         && playerHands.size() < 7) {
                     options.add(Option.SPLIT);
                 }
