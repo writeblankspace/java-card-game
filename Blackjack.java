@@ -420,32 +420,37 @@ public class Blackjack {
             return mayInitializeHands;
         }
 
-        // TODO: dealer's hand must be shown to the right of player hands
-        //       and showPlayerHands() and showDealerHand() must become
-        //       showHands()
-
         /**
-         * Shows the player's hands on the console.
+         * Shows the player's and dealer's hands on the console.
          * <p>
          * The statuses and values of each hand are also shown, as well as which
          * hand is currently being played.
          */
-        private void showPlayerHands() {
+        private void showHands() {
             // Get the longest Hand from playerHands
             int maxLength = Collections.max(
                     this.playerHands, Comparator.comparingInt(a -> a.cards.size())
             ).cards.size();
+            // Also compare with the dealerHand
+            if (maxLength < dealerHand.cards.size()) {
+                maxLength = dealerHand.cards.size();
+            }
+
+            boolean dealerHandExists = !dealerHand.cards.isEmpty();
+            int numHands = this.playerHands.size() + (dealerHandExists ? 1 : 0);
 
             StringBuilder[] sbs = new StringBuilder[(maxLength * 2) + 4];
-            String[][] playerHandStringses = new String[this.playerHands.size()][maxLength];
+            String[][] handStringses =
+                    new String[numHands][maxLength];
 
             sbs[0] = new StringBuilder();
 
+            // For player hands
             for (int i = 0; i < this.playerHands.size(); i++) {
-                // For efficiency, populate playerHandStringses
+                // For efficiency, populate handStringses
                 // so we don't go O(n^2) on the .toStrings() — just O(n) is alr
                 String[] playerHandStrings = this.playerHands.get(i).toStrings();
-                playerHandStringses[i] = playerHandStrings;
+                handStringses[i] = playerHandStrings;
 
                 // Also make the first StringBuilder row show titles for each hand
                 if (i == this.currentPlayerHandIndex) {
@@ -454,6 +459,12 @@ public class Blackjack {
                     sbs[0].append("       ");
                 }
             }
+            // For the dealer hand
+            if (dealerHandExists) {
+                handStringses[handStringses.length - 1] = dealerHand.toStrings();
+                sbs[0].append(" ").append("DEAL").append("  ");
+            }
+
 
             // Build the string row by row
             for (int i = 1; i < sbs.length; i++) {
@@ -461,17 +472,17 @@ public class Blackjack {
                 sbs[i] = new StringBuilder();
 
                 // And get that row from each hand
-                for (int j = 0; j < this.playerHands.size(); j++) {
-                    String playerHandStringsRow;
+                for (int j = 0; j < numHands; j++) {
+                    String handStringsRow;
 
                     // I don't want no NullPointerExceptions
-                    if (i < playerHandStringses[j].length && playerHandStringses[j][i - 1] != null) {
-                        playerHandStringsRow = playerHandStringses[j][i - 1];
+                    if (i < handStringses[j].length && handStringses[j][i - 1] != null) {
+                        handStringsRow = handStringses[j][i - 1];
                     } else {
-                        playerHandStringsRow = "      ";
+                        handStringsRow = "      ";
                     }
 
-                    sbs[i].append(playerHandStringsRow).append(" ");
+                    sbs[i].append(handStringsRow).append(" ");
                 }
             }
 
@@ -480,18 +491,7 @@ public class Blackjack {
             }
 
             System.out.println();
-        }
 
-        /**
-         * Shows the dealer's hand on the console.
-         */
-        private void showDealerHand() {
-            for (String string : this.dealerHand.toStrings()) {
-                if (string != null) {
-                    System.out.println(string);
-                }
-            }
-            System.out.println();
         }
 
         /**
@@ -696,7 +696,7 @@ public class Blackjack {
 
                     // Skip hand if it can't be played
                     if (hand.canBePlayed()) {
-                        this.showPlayerHands();
+                        this.showHands();
                         Option option = this.chooseOption();
                         this.playOption(option);
 
@@ -723,8 +723,7 @@ public class Blackjack {
                 dealerHand.addCards(cardsBuffer);
             }
 
-            System.out.println("\n DLER ");
-            this.showDealerHand();
+            this.showHands();
 
             System.out.println("Game over");
         }
