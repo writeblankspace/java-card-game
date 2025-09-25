@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
@@ -14,10 +13,6 @@ public class Main {
             super(message);
         }
     }
-
-    // TODO: use getters and setters for classes
-    //       use an abstract class for all classes that use Card[] or
-    //       ArrayList<Card>
 
     /**
      * Initiates the game of Blackjack.
