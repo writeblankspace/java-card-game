@@ -42,7 +42,7 @@ public class Blackjack {
      */
     private static class Hand {
 
-        public ArrayList<Cards.Card> cards;
+        private ArrayList<Cards.Card> cards;
         private HandStatus status;
         private int turnStatusUpdated;
 
