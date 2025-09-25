@@ -186,11 +186,13 @@ public class Blackjack {
             res[index + 1] = "╰────╯";
 
             if (this.status == HandStatus.SPLIT) {
-                res[index + 2] = " * " + String.format("%1$2s", this.getValue()) + " ";
+                res[index + 2] = " * " + String.format("%1$2s",
+                        Integer.toString(this.getValue())) + " ";
             } else if (this.status != null) {
                 res[index + 2] = this.status.toString();
             } else {
-                res[index + 2] = "   " + String.format("%1$2s", this.getValue()) + " ";
+                res[index + 2] = "   " + String.format("%1$2s",
+                        Integer.toString(this.getValue())) + " ";
             }
 
             return res;
