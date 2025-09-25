@@ -15,6 +15,10 @@ public class Main {
         }
     }
 
+    // TODO: use getters and setters for classes
+    //       use an abstract class for all classes that use Card[] or
+    //       ArrayList<Card>
+
     /**
      * Initiates the game of Blackjack.
      * <p>
