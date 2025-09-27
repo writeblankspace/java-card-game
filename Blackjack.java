@@ -105,7 +105,8 @@ public class Blackjack {
         public HandStatus updateStatus(int turn) {
             // All statuses except for SPLIT mean that the hand takes no more cards
             // So leave the status be if it is null or SPLIT
-            if (this.canBePlayed()) {
+            // And if it's a DOUBLE_DOWN, we need to check for TWENTY_ONEs and BUSTs
+            if (this.canBePlayed() || this.status == HandStatus.DOUBLE_DOWN) {
                 int handValue = this.getValue();
 
                 if (handValue == 21) {
@@ -124,7 +125,8 @@ public class Blackjack {
                 } else if (handValue > 21) {
                     // Whoops, busted
                     this.status = HandStatus.BUST;
-                } else if (this.turnStatusUpdated != turn && this.status == HandStatus.SPLIT) {
+                } else if (this.turnStatusUpdated != turn
+                        && this.status == HandStatus.SPLIT) {
                     // The currentTurn is over and the hand is below 21
                     // And the status wasn't updated as a split this currentTurn
                     this.status = null;
@@ -717,10 +719,18 @@ public class Blackjack {
 
             System.out.println("Resolving dealer's hand...");
 
+            this.currentPlayerHandIndex = 1;
+
             Cards.Card[] cardsBuffer;
             while (dealerHand.getValue() < 17) {
                 cardsBuffer = this.deck.drawCards(1);
                 dealerHand.addCards(cardsBuffer);
+            }
+
+            dealerHand.updateStatus(-1); // No need for a turn number
+
+            if (dealerHand.status == HandStatus.BUST) {
+                // All players who haven't busted win
             }
 
             this.showHands();
