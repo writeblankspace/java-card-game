@@ -262,12 +262,12 @@ public class Blackjack {
             } else {
                 if (this.status == HandStatus.SPLIT) {
                     res[index + 2] = " * " + String.format("%1$2s",
-                            Integer.toString(this.getValue())) + " ";
+                            this.getValue()) + " ";
                 } else if (this.status != null) {
                     res[index + 2] = this.status.toString();
                 } else {
                     res[index + 2] = "   " + String.format("%1$2s",
-                            Integer.toString(this.getValue())) + " ";
+                            this.getValue()) + " ";
                 }
             }
 
@@ -801,8 +801,8 @@ public class Blackjack {
 
             this.dealerHand.updateStatus(-1); // No need for a turn number
 
-            for (int i = 0; i < this.playerHands.size(); i++) {
-                this.playerHands.get(i).updateOutcome(this.dealerHand);
+            for (Hand playerHand : this.playerHands) {
+                playerHand.updateOutcome(this.dealerHand);
             }
 
             this.showHands();
