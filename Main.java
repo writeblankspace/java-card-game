@@ -56,11 +56,7 @@ public class Main {
         System.out.println();
 
         // Create a GameDebugger instance
-        Blackjack.GameDebugger debugger = new Blackjack.GameDebugger()
-                //.setCheats(new Blackjack.Cheat[]{Blackjack.Cheat.ALL_ACES})
-                //.setDeckCardFaces(new Cards.Face[]{})
-                //.setNumCardsPerHand(new int[]{2, 2, 3, 3})
-                ;
+        Blackjack.GameDebugger debugger = new Blackjack.GameDebugger();
 
         Blackjack.Game game = new Blackjack.Game(debugger);
         game.start();

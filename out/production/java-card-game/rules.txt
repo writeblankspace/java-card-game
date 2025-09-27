@@ -83,7 +83,7 @@ AFTER THE PLAYERS HAVE FINISHED
         - If the dealer busts, all players who haven't busted win.
 
         - If the dealer does not bust, each remaining bet wins if its hand is
-            higher than the dealer's hand, as loses otherwise.
+            higher than the dealer's hand, and loses otherwise.
 
         - In the case of a tie ("push"), bets are returned without adjustment.
 

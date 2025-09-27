@@ -29,6 +29,26 @@ public class Blackjack {
     }
 
     /**
+     * The outcome of the hand at the end of the game.
+     */
+    private enum HandOutcome {
+        WIN("~WIN!~"),
+        LOSS("~LOSS~"),
+        PUSH("~PUSH~");
+
+        private final String shorthand;
+
+        HandOutcome(String shorthand) {
+            this.shorthand = shorthand;
+        }
+
+        @Override
+        public String toString() {
+            return this.shorthand;
+        }
+    }
+
+    /**
      * A single hand in a game of Blackjack.
      * <p>
      * A hand may contain any number of cards, but due to how Blackjack works
@@ -44,6 +64,7 @@ public class Blackjack {
 
         private ArrayList<Cards.Card> cards;
         private HandStatus status;
+        private HandOutcome outcome;
         private int turnStatusUpdated;
 
         Hand() {
@@ -61,10 +82,17 @@ public class Blackjack {
          * <p>
          * It ensures that aces are valued correctly according to the rules
          * of Blackjack.
+         * <p>
+         * If the hand is a blackjack, it is valued at the arbitrary value of
+         * 100, as it beats any hand that is not a blackjack.
          *
          * @return  the value of this hand
          */
         public int getValue() {
+            if (this.status == HandStatus.BLACKJACK) {
+                return 100;
+            }
+
             int res = 0;
             int numAces = 0;
 
@@ -110,7 +138,7 @@ public class Blackjack {
                 int handValue = this.getValue();
 
                 if (handValue == 21) {
-                    // It could be a Blackjack!
+                    // It could be a blackjack!
                     if (this.cards.size() == 2) {
                         // A 10-valued card and an ace from a split isn't considered a blackjack
                         if (this.cards.stream().anyMatch(x -> x.getFace() == Cards.Face.ACE)
@@ -159,6 +187,48 @@ public class Blackjack {
             return (this.status == null || this.status == HandStatus.SPLIT);
         }
 
+        /**
+         * Updates the outcome of this hand based on the dealer's hand
+         * @param dealerHand    the dealer's hand
+         * @return              the outcome of this hand. Returns
+         *                      <code>null</code> if this hand was surrendered.
+         */
+        public HandOutcome updateOutcome(Hand dealerHand) {
+            if (this.status == HandStatus.SURRENDER) {
+                return null;
+            } else {
+                if (dealerHand.status == HandStatus.BUST) {
+                    // If the dealer busts, all players who haven't busted win
+                    if (this.status != HandStatus.BUST) {
+                        this.outcome = HandOutcome.WIN;
+                    } else {
+                        this.outcome = HandOutcome.LOSS;
+                    }
+                } else {
+                    // If the dealer does not bust, each remaining bet...
+                    // - wins if its hand is higher than the dealer's hand
+                    // - loses if its hand is lower than the dealer's hand
+                    // In the case of a tie ("push"), bets are returned without
+                    // adjustment
+
+                    int thisHandValue = this.getValue();
+                    int dealerHandValue = dealerHand.getValue();
+
+                    if (thisHandValue > dealerHandValue) {
+                        this.outcome = HandOutcome.WIN;
+                    } else if (thisHandValue == dealerHandValue) {
+                        // Blackjacks are valued at 100 in this program, so
+                        // they beat all hands that are not blackjacks
+                        this.outcome = HandOutcome.PUSH;
+                    } else {
+                        this.outcome = HandOutcome.LOSS;
+                    }
+                }
+            }
+
+            return this.outcome;
+        }
+
         // TODO: make a 'cache' for hands' strings so toString() won't be called everytime
         //       unless there was actually a change in the cards' content
 
@@ -187,14 +257,18 @@ public class Blackjack {
             res[index] = "│    │";
             res[index + 1] = "╰────╯";
 
-            if (this.status == HandStatus.SPLIT) {
-                res[index + 2] = " * " + String.format("%1$2s",
-                        Integer.toString(this.getValue())) + " ";
-            } else if (this.status != null) {
-                res[index + 2] = this.status.toString();
+            if (this.outcome != null) {
+                res[index + 2] = this.outcome.toString();
             } else {
-                res[index + 2] = "   " + String.format("%1$2s",
-                        Integer.toString(this.getValue())) + " ";
+                if (this.status == HandStatus.SPLIT) {
+                    res[index + 2] = " * " + String.format("%1$2s",
+                            Integer.toString(this.getValue())) + " ";
+                } else if (this.status != null) {
+                    res[index + 2] = this.status.toString();
+                } else {
+                    res[index + 2] = "   " + String.format("%1$2s",
+                            Integer.toString(this.getValue())) + " ";
+                }
             }
 
             return res;
@@ -715,11 +789,9 @@ public class Blackjack {
 
             } while (canContinueGame);
 
-            // TODO: show results of each hand and let the dealer play
+            System.out.println("Resolving dealer's hand...\n");
 
-            System.out.println("Resolving dealer's hand...");
-
-            this.currentPlayerHandIndex = 1;
+            this.currentPlayerHandIndex = 0;
 
             Cards.Card[] cardsBuffer;
             while (dealerHand.getValue() < 17) {
@@ -727,10 +799,10 @@ public class Blackjack {
                 dealerHand.addCards(cardsBuffer);
             }
 
-            dealerHand.updateStatus(-1); // No need for a turn number
+            this.dealerHand.updateStatus(-1); // No need for a turn number
 
-            if (dealerHand.status == HandStatus.BUST) {
-                // All players who haven't busted win
+            for (int i = 0; i < this.playerHands.size(); i++) {
+                this.playerHands.get(i).updateOutcome(this.dealerHand);
             }
 
             this.showHands();
