@@ -189,6 +189,7 @@ public class Blackjack {
 
         /**
          * Updates the outcome of this hand based on the dealer's hand
+         *
          * @param dealerHand    the dealer's hand
          * @return              the outcome of this hand. Returns
          *                      <code>null</code> if this hand was surrendered.
