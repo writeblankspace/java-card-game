@@ -58,7 +58,23 @@ public class Main {
         // Create a GameDebugger instance
         Blackjack.GameDebugger debugger = new Blackjack.GameDebugger();
 
-        Blackjack.Game game = new Blackjack.Game(debugger);
-        game.start();
+        boolean playAgain;
+
+        do {
+            Blackjack.Game game = new Blackjack.Game(debugger);
+            game.start();
+
+            System.out.print("Would you like to play again? (y/N): ");
+
+            // Ignore invalid output and move on
+            if (scanner.hasNextLine()) {
+                input = scanner.nextLine();
+                playAgain = input.equalsIgnoreCase("y");
+            } else {
+                playAgain = false;
+            }
+            System.out.println();
+
+        } while (playAgain);
     }
 }

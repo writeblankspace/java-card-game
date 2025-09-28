@@ -808,7 +808,7 @@ public class Blackjack {
 
             this.showHands();
 
-            System.out.println("Game over");
+            System.out.println("Game over.");
         }
 
     }
